@@ -4,10 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Esperalopy — Sitio oficial</title>
-  <meta name="description" content="Sitio oficial de Esperalopy. Productos y servicios con atención cercana y confiable.">
+  <meta name="description" content="Sitio oficial de Esperalopy. Compra y ventas minoristas con atención cercana y confiable.">
   <!-- Open Graph / SEO -->
   <meta property="og:title" content="Esperalopy — Sitio oficial">
-  <meta property="og:description" content="Productos y servicios con atención cercana y confiable.">
+  <meta property="og:description" content="Compra y ventas minoristas con atención cercana y confiable.">
   <meta property="og:image" content="assets/og-image.png">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_PY">
@@ -21,21 +21,22 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <!-- HEADER -->
   <header class="container">
     <nav class="nav" aria-label="Principal">
       <a class="brand" href="#inicio" aria-label="Inicio">
-        <img src="assets/logo.svg" alt="Logo Esperalopy"/>
+        <img src="assets/logo.svg" alt="Logo Esperalopy">
         <span>Esperalopy</span>
       </a>
       <div class="menu">
         <a href="#servicios">Servicios</a>
-        <a href="#galeria">Galería</a>
-        <a href="#contacto" class="btn" style="padding:8px 14px">Contacto</a>
+        <a href="#contacto" class="btn secondary">Contacto</a>
       </div>
     </nav>
   </header>
 
   <main id="inicio" class="container">
+    <!-- HERO -->
     <section class="hero">
       <div>
         <h1 class="h1">Hacemos que tus ideas <span style="color:var(--accent)">cobren vida</span>.</h1>
@@ -48,38 +49,33 @@
       <img src="assets/hero.png" alt="Portada de Esperalopy">
     </section>
 
+    <!-- SERVICIOS -->
     <section id="servicios" class="section">
       <div class="badge">Qué ofrecemos</div>
       <h2 style="margin:6px 0 16px 0">Servicios principales</h2>
+
       <div class="grid3">
         <article class="card">
-          <img src="assets/feature1.png" alt="Calidad garantizada" style="width:100%;border-radius:12px;margin-bottom:10px">
+          <img src="assets/feature1.png" alt="Calidad garantizada">
           <h3>Calidad que se nota</h3>
           <p>Productos y trabajos con estándares altos y revisión final antes de entregar.</p>
         </article>
+
         <article class="card">
-          <img src="assets/feature2.png" alt="Atención cercana" style="width:100%;border-radius:12px;margin-bottom:10px">
+          <img src="assets/feature2.png" alt="Atención cercana">
           <h3>Atención cercana</h3>
           <p>Conversamos por WhatsApp o correo, como te resulte más cómodo.</p>
         </article>
+
         <article class="card">
-          <img src="assets/feature3.png" alt="Precios justos" style="width:100%;border-radius:12px;margin-bottom:10px">
+          <img src="assets/feature3.png" alt="Precios justos">
           <h3>Precios justos</h3>
           <p>Planes simples y flexibles. Pagás solo por lo que realmente necesitás.</p>
         </article>
       </div>
     </section>
 
-    <section id="galeria" class="section">
-      <div class="badge">Galería</div>
-      <h2 style="margin:6px 0 16px 0">Un vistazo</h2>
-      <div class="gallery">
-        <img src="assets/feature1.png" alt="Muestra 1">
-        <img src="assets/feature2.png" alt="Muestra 2">
-        <img src="assets/feature3.png" alt="Muestra 3">
-      </div>
-    </section>
-
+    <!-- CONTACTO -->
     <section id="contacto" class="section">
       <div class="badge">Contacto</div>
       <h2 style="margin:6px 0 16px 0">Hablemos</h2>
@@ -88,5 +84,18 @@
     </section>
   </main>
 
-  <!-- === FOOTER === -->
-  <footer class="footer"
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p><strong>Esperalopy</strong> · Compra y ventas minoristas</p>
+    <p>
+      📧 <a href="mailto:esperalospy@gmail.com">esperalospy@gmail.com</a> ·
+      💬 <a href="https://wa.me/595994252213" target="_blank" rel="noopener noreferrer">WhatsApp: +595 994 252 213</a>
+    </p>
+    <p>
+      <a href="#servicios">Servicios</a> · 
+      <a href="#contacto">Contacto</a>
+    </p>
+    <p>© 2025 Esperalopy. Todos los derechos reservados.</p>
+  </footer>
+</body>
+</html>

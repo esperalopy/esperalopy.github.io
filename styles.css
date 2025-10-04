@@ -160,7 +160,7 @@ h2 {
 
 /* === LOGO === */
 .brand img {
-  height: 40px;   /* tamaño del logo */
+  height: 60px;   /* tamaño del logo */
   width: auto;    /* mantiene la proporción */
   vertical-align: middle;
 }

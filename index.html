@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tu Marca — Sitio oficial</title>
+  <meta name="description" content="Sitio oficial de Tu Marca. Productos y servicios con atención cercana y confiable.">
+  <!-- Open Graph / SEO -->
+  <meta property="og:title" content="Tu Marca — Sitio oficial">
+  <meta property="og:description" content="Productos y servicios con atención cercana y confiable.">
+  <meta property="og:image" content="assets/og-image.png">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_ES">
+  <!-- Security-minded meta (best-effort for static pages) -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <link rel="preload" href="styles.css" as="style">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="container">
+    <nav class="nav" aria-label="Principal">
+      <a class="brand" href="#inicio" aria-label="Inicio">
+        <img src="assets/logo.svg" alt="Logo Tu Marca"/>
+        <span>Tu&nbsp;Marca</span>
+      </a>
+      <div class="menu">
+        <a href="#servicios">Servicios</a>
+        <a href="#galeria">Galería</a>
+        <a href="#contacto" class="btn" style="padding:8px 14px">Contacto</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="inicio" class="container">
+    <section class="hero">
+      <div>
+        <h1 class="h1">Hacemos que tus ideas <span style="color:var(--accent)">cobren vida</span>.</h1>
+        <p class="lead">Un sitio simple, veloz y seguro para presentar tu emprendimiento. Editá los textos, reemplazá las fotos y publicá gratis con GitHub Pages.</p>
+        <div class="cta">
+          <a class="btn" href="https://wa.me/595000000000?text=Hola%20vengo%20de%20tu%20web" target="_blank" rel="noopener noreferrer">Escribime al WhatsApp</a>
+          <a class="btn secondary" href="#servicios">Ver servicios</a>
+        </div>
+      </div>
+      <img src="assets/hero.png" alt="Ejemplo de portada de Tu Marca">
+    </section>
+
+    <section id="servicios" class="section">
+      <div class="badge">Qué ofrecemos</div>
+      <h2 style="margin:6px 0 16px 0">Servicios principales</h2>
+      <div class="grid3">
+        <article class="card">
+          <img src="assets/feature1.png" alt="Calidad garantizada" style="width:100%;border-radius:12px;margin-bottom:10px">
+          <h3>Calidad que se nota</h3>
+          <p>Productos y trabajos con estándares altos y revisión final antes de entregar.</p>
+        </article>
+        <article class="card">
+          <img src="assets/feature2.png" alt="Atención cercana" style="width:100%;border-radius:12px;margin-bottom:10px">
+          <h3>Atención cercana</h3>
+          <p>Conversamos por WhatsApp o correo, como te resulte más cómodo.</p>
+        </article>
+        <article class="card">
+          <img src="assets/feature3.png" alt="Precios justos" style="width:100%;border-radius:12px;margin-bottom:10px">
+          <h3>Precios justos</h3>
+          <p>Planes simples y flexibles. Pagás solo por lo que realmente necesitás.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="galeria" class="section">
+      <div class="badge">Galería</div>
+      <h2 style="margin:6px 0 16px 0">Un vistazo</h2>
+      <div class="gallery">
+        <img src="assets/feature1.png" alt="Muestra 1">
+        <img src="assets/feature2.png" alt="Muestra 2">
+        <img src="assets/feature3.png" alt="Muestra 3">
+      </div>
+    </section>
+
+    <section id="contacto" class="section">
+      <div class="badge">Contacto</div>
+      <h2 style="margin:6px 0 16px 0">Hablemos</h2>
+      <p>Correo: <a href="mailto:contacto@tumarca.com" rel="noopener">contacto@tumarca.com</a></p>
+      <p>WhatsApp: <a href="https://wa.me/595000000000" target="_blank" rel="noopener noreferrer">+595 000 000 000</a></p>
+    </section>
+  </main>
+
+  <footer class="container footer">
+    <span>© 2025 Tu Marca. Todos los derechos reservados.</span>
+  </footer>
+</body>
+</html>

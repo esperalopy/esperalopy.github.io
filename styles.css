@@ -1,175 +1,144 @@
-/* === Reset básico === */
+/* === RESET === */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-:root {
-  --bg: #0a0f1f;        /* Azul marino oscuro */
-  --text: #e5f1ff;      /* Texto claro */
-  --accent: #1abc9c;    /* Verde turquesa */
-  --accent-dark: #16a085;
-  --button-blue: #2980b9;  /* Azul botón */
-}
-
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: var(--bg);
-  color: var(--text);
+  font-family: Arial, sans-serif;
+  background-color: #0b0e1a;
+  color: #ffffff;
   line-height: 1.6;
+  padding: 0;
+  margin: 0;
 }
 
-/* === NAV === */
-.nav {
+/* === NAVBAR === */
+header {
+  background: #0b0e1a;
+  padding: 15px 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 32px;
 }
 
-.nav a {
-  color: var(--text);
-  text-decoration: none;
+header .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+header nav a {
   margin-left: 20px;
+  text-decoration: none;
+  color: #ffffff;
   font-weight: 500;
 }
 
-.nav a.btn {
-  background: var(--button-blue);
-  padding: 8px 16px;
-  border-radius: 8px;
-  transition: 0.3s;
-}
-
-.nav a.btn:hover {
-  background: var(--accent);
-  color: #fff;
+header nav a:hover {
+  color: #1dbf73;
 }
 
 /* === HERO === */
 .hero {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  text-align: center;
-  padding: 60px 32px;
   gap: 40px;
+  padding: 50px 20px;
+  text-align: left;
 }
 
 .hero h1 {
   font-size: 2.5rem;
-  font-weight: bold;
+  margin-bottom: 15px;
 }
 
 .hero p {
-  margin: 20px 0;
   font-size: 1.1rem;
+  margin-bottom: 20px;
 }
 
 .hero img {
-  width: 100%;
-  max-width: 500px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  max-width: 350px;
+  border-radius: 10px;
 }
 
-/* === BOTONES === */
+/* Botones */
 .btn {
-  display: inline-block;
-  padding: 12px 20px;
-  margin-right: 10px;
-  border-radius: 8px;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: bold;
   text-decoration: none;
-  font-weight: 600;
-  transition: 0.3s;
+  display: inline-block;
+  margin-right: 10px;
 }
 
 .btn.primary {
-  background: var(--accent);
-  color: #fff;
+  background-color: #1dbf73;
+  color: white;
 }
 
 .btn.primary:hover {
-  background: var(--accent-dark);
+  background-color: #17a463;
 }
 
 .btn.secondary {
-  background: var(--button-blue);
-  color: #fff;
+  background-color: #3498db;
+  color: white;
 }
 
 .btn.secondary:hover {
-  background: var(--accent);
+  background-color: #2980b9;
 }
 
-/* === CONTENEDOR GENERAL === */
-.container {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 0 16px;
+/* === SECCIONES GENERALES === */
+section {
+  padding: 60px 20px;
+  max-width: 1200px;
+  margin: auto;
 }
 
-/* === SECCIONES === */
-.section {
-  padding: 60px 32px;
+h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
 }
 
-.badge {
-  display: inline-block;
-  background: var(--accent);
-  color: #fff;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  margin-bottom: 10px;
-}
-
-/* === TARJETAS === */
+/* === GRID === */
 .grid3 {
   display: grid;
-  gap: 24px;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 
 .card {
-  background: #11182b;
-  border-radius: 12px;
+  background: #101528;
+  border-radius: 10px;
   padding: 20px;
-  transition: 0.3s;
-  overflow: hidden;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
 .card img {
-  width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 12px;
-  margin-bottom: 10px;
+  max-width: 100%;
+  border-radius: 10px;
 }
 
 .card h3 {
-  font-size: 1.2rem;
-  margin: 6px 0 4px;
-}
-
-.card p {
-  font-size: 0.95rem;
-  color: #b9cbe2;
+  margin: 15px 0;
 }
 
 /* === FOOTER === */
 .footer {
-  background: #0d1429;       /* fondo más oscuro */
+  background: #0d1429; /* fondo más oscuro */
   padding: 24px 32px;
   text-align: center;
-  color: #96b3c9;            /* texto gris claro */
+  color: #96b3c9; /* texto gris claro */
   border-top: 1px solid rgba(255,255,255,0.1);
   font-size: 0.95rem;
 }
@@ -188,9 +157,10 @@ body {
 .footer a:hover {
   color: var(--accent-dark);
 }
+
 /* === LOGO === */
 .brand img {
-  height: 50px;   /* ajusta el alto */
+  height: 40px;   /* tamaño del logo */
   width: auto;    /* mantiene la proporción */
   vertical-align: middle;
 }

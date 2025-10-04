@@ -1,4 +1,12 @@
-/* === RESET === */
+/* === VARIABLES === */
+:root {
+  --bg: #0d1429;         /* fondo oscuro */
+  --text: #ffffff;       /* texto blanco */
+  --accent: #1abc9c;     /* verde turquesa */
+  --button-blue: #3498db; /* azul botón */
+}
+
+/* === GLOBAL === */
 * {
   margin: 0;
   padding: 0;
@@ -6,139 +14,141 @@
 }
 
 body {
-  font-family: Arial, sans-serif;
-  background-color: #0b0e1a;
-  color: #ffffff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg);
+  color: var(--text);
   line-height: 1.6;
-  padding: 0;
-  margin: 0;
 }
 
 /* === NAVBAR === */
-header {
-  background: #0b0e1a;
-  padding: 15px 30px;
+.nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 16px 32px;
 }
 
-header .brand {
+.brand {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #fff;
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
 }
 
-header nav a {
-  margin-left: 20px;
+.brand img {
+  height: 40px;    /* LOGO ajustado */
+  width: auto;     /* mantiene proporción */
+  vertical-align: middle;
+}
+
+.menu {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.menu a {
+  color: var(--text);
   text-decoration: none;
-  color: #ffffff;
   font-weight: 500;
 }
 
-header nav a:hover {
-  color: #1dbf73;
+.menu a.btn {
+  background: var(--button-blue);
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.menu a.btn:hover {
+  background: var(--accent);
+  color: #fff;
 }
 
 /* === HERO === */
 .hero {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
   gap: 40px;
-  padding: 50px 20px;
-  text-align: left;
+  padding: 80px 32px;
 }
 
 .hero h1 {
   font-size: 2.5rem;
-  margin-bottom: 15px;
+  margin-bottom: 16px;
 }
 
 .hero p {
+  margin-bottom: 24px;
   font-size: 1.1rem;
-  margin-bottom: 20px;
 }
 
-.hero img {
-  max-width: 350px;
-  border-radius: 10px;
+.cta {
+  display: flex;
+  gap: 12px;
 }
 
-/* Botones */
 .btn {
-  padding: 12px 24px;
-  border-radius: 6px;
-  font-weight: bold;
-  text-decoration: none;
   display: inline-block;
-  margin-right: 10px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
 }
 
 .btn.primary {
-  background-color: #1dbf73;
-  color: white;
-}
-
-.btn.primary:hover {
-  background-color: #17a463;
+  background: var(--accent);
+  color: #fff;
 }
 
 .btn.secondary {
-  background-color: #3498db;
-  color: white;
+  background: var(--button-blue);
+  color: #fff;
+}
+
+.btn.primary:hover {
+  background: #16a085;
 }
 
 .btn.secondary:hover {
-  background-color: #2980b9;
+  background: #2980b9;
 }
 
-/* === SECCIONES GENERALES === */
-section {
-  padding: 60px 20px;
-  max-width: 1200px;
-  margin: auto;
-}
-
-h2 {
-  font-size: 2rem;
-  margin-bottom: 20px;
-}
-
-/* === GRID === */
+/* === GRID GENERAL === */
 .grid3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  gap: 24px;
+  padding: 40px 32px;
 }
 
 .card {
-  background: #101528;
-  border-radius: 10px;
+  background: #10172a;
+  border-radius: 12px;
   padding: 20px;
   text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
 }
 
 .card img {
   max-width: 100%;
-  border-radius: 10px;
-}
-
-.card h3 {
-  margin: 15px 0;
+  border-radius: 8px;
+  margin-bottom: 12px;
 }
 
 /* === FOOTER === */
 .footer {
-  background: #0d1429; /* fondo más oscuro */
+  background: #0a1123;
   padding: 24px 32px;
   text-align: center;
-  color: #96b3c9; /* texto gris claro */
+  color: #96b3c9;
   border-top: 1px solid rgba(255,255,255,0.1);
   font-size: 0.95rem;
 }
@@ -158,9 +168,14 @@ h2 {
   color: var(--accent-dark);
 }
 
-/* === LOGO === */
-.brand img {
-  height: 60px;   /* tamaño del logo */
-  width: auto;    /* mantiene la proporción */
-  vertical-align: middle;
+/* === RESPONSIVE === */
+@media (max-width: 960px) {
+  .hero {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .grid3 {
+    grid-template-columns: 1fr;
+  }
 }

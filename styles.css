@@ -70,11 +70,13 @@ body {
 
 /* === HERO === */
 .hero {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  justify-content: center;
   align-items: center;
   gap: 40px;
   padding: 80px 32px;
+  flex-wrap: wrap;
+  text-align: left;
 }
 
 .hero h1 {
@@ -88,11 +90,12 @@ body {
 }
 
 .hero img {
-  max-width: 450px;   /* <<< AJUSTE DEL HERO */
+  max-width: 350px;   /* <<< AJUSTE DEL HERO */
   width: 100%;
   border-radius: 12px;
   display: block;
   margin: 0 auto;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
 }
 
 /* === BOTONES === */
@@ -182,13 +185,13 @@ body {
 /* === RESPONSIVE === */
 @media (max-width: 960px) {
   .hero {
-    grid-template-columns: 1fr;
+    flex-direction: column;
     text-align: center;
   }
 
   .hero img {
     margin-top: 20px;
-    max-width: 300px; /* hero más chico en celular */
+    max-width: 250px; /* hero más chico en celular */
   }
 
   .grid3 {

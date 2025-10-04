@@ -188,3 +188,9 @@ body {
 .footer a:hover {
   color: var(--accent-dark);
 }
+/* === LOGO === */
+.brand img {
+  height: 50px;   /* ajusta el alto */
+  width: auto;    /* mantiene la proporción */
+  vertical-align: middle;
+}

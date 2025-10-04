@@ -129,5 +129,40 @@ body {
   box-shadow: 0 6px 15px rgba(0,0,0,0.4);
 }
 
+/* === GRIDS Y RESPONSIVE === */
+.grid3,
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 960px) {
+  .hero { 
+    flex-direction: column; 
+  }
+  .grid3,
+  .gallery {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* === FOOTER === */
-.footer
+.footer {
+  background: #0d1429;
+  padding: 20px 32px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #9cb3c9;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.footer a {
+  color: var(--accent);
+  text-decoration: none;
+  margin: 0 8px;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}

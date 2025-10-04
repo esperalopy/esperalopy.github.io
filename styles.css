@@ -4,6 +4,7 @@
   --text: #ffffff;       /* texto blanco */
   --accent: #1abc9c;     /* verde turquesa */
   --button-blue: #3498db; /* azul botón */
+  --accent-dark: #16a085;
 }
 
 /* === GLOBAL === */
@@ -86,9 +87,19 @@ body {
   font-size: 1.1rem;
 }
 
+.hero img {
+  max-width: 450px;   /* <<< AJUSTE DEL HERO */
+  width: 100%;
+  border-radius: 12px;
+  display: block;
+  margin: 0 auto;
+}
+
+/* === BOTONES === */
 .cta {
   display: flex;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .btn {
@@ -110,7 +121,7 @@ body {
 }
 
 .btn.primary:hover {
-  background: #16a085;
+  background: var(--accent-dark);
 }
 
 .btn.secondary:hover {
@@ -173,6 +184,11 @@ body {
   .hero {
     grid-template-columns: 1fr;
     text-align: center;
+  }
+
+  .hero img {
+    margin-top: 20px;
+    max-width: 300px; /* hero más chico en celular */
   }
 
   .grid3 {

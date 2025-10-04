@@ -147,22 +147,57 @@ body {
   }
 }
 
-/* === FOOTER === */
+/* === FOOTER (completo y responsive) === */
 .footer {
-  background: #0d1429;
-  padding: 20px 32px;
+  background: #0d1429;               /* fondo más oscuro */
+  padding: 24px 32px;
   text-align: center;
-  font-size: 0.9rem;
-  color: #9cb3c9;
+  color: #9cb3c9;                    /* texto gris claro */
   border-top: 1px solid rgba(255,255,255,0.1);
+  font-size: 0.95rem;
 }
+
+.footer p { margin: 8px 0; }
 
 .footer a {
-  color: var(--accent);
+  color: var(--accent);              /* verde turquesa */
   text-decoration: none;
   margin: 0 8px;
+  font-weight: 600;
 }
 
-.footer a:hover {
-  text-decoration: underline;
+.footer a:hover { text-decoration: underline; }
+
+.footer span {
+  display: block;
+  margin-top: 6px;
+  opacity: 0.9;
+  font-size: 0.85rem;
+}
+
+/* === Tablet === */
+@media (max-width: 960px) {
+  .footer { padding: 24px 20px; }
+  .footer a { margin: 0 6px; }
+}
+
+/* === Móvil === */
+@media (max-width: 640px) {
+  .footer {
+    text-align: center;
+    font-size: 1rem;
+    padding: 20px 16px;
+  }
+
+  /* contactos en bloques */
+  .footer p:nth-of-type(2) a {
+    display: block;
+    margin: 6px 0;
+  }
+
+  /* links de navegación en bloque */
+  .footer p:nth-of-type(3) a {
+    display: inline-block;
+    margin: 6px 8px;
+  }
 }

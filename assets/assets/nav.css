@@ -100,3 +100,38 @@ header .nav{
     display: inline-block !important;
   }
 }
+/* === FIX FINAL: hamburguesa a la derecha y oculta en desktop === */
+header .nav{ position: relative !important; }
+
+/* Oculta en desktop */
+.hamburger{ 
+  display: none !important; 
+}
+
+/* En mobile: pegada a la derecha, alineada verticalmente */
+@media (max-width:820px){
+  .hamburger{
+    display: inline-block !important;
+    position: absolute !important;
+    right: 12px; 
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  header .nav .menu{
+    position: absolute; 
+    top: 64px; 
+    left: 12px; 
+    right: 12px;
+    display: none; 
+    flex-direction: column; 
+    gap: 8px;
+    padding: 12px; 
+    margin: 0; 
+    border-radius: 12px;
+    background: var(--card, #0f162e); 
+    border: 1px solid var(--line, #1b2340);
+    z-index: 60;
+  }
+  header .nav .menu.open{ display:block; }
+}

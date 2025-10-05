@@ -202,3 +202,19 @@ img {
 
   .menu a.btn { padding: 6px 12px; }
 }
+/* --- Paso 2: mejoras del hero y botones --- */
+.btn{ transition: transform .08s ease, box-shadow .2s ease, filter .15s ease; }
+.btn:hover{ transform: translateY(-1px); filter: brightness(1.05); }
+.btn:active{ transform: translateY(0); }
+.btn.primary{ box-shadow: 0 6px 20px rgba(0,0,0,.25); }
+.btn.primary:hover{ box-shadow: 0 8px 26px rgba(0,0,0,.3); }
+
+/* Hero más legible */
+.hero .h1{ line-height: 1.15; }
+.hero .lead{ max-width: 720px; margin-top: 8px; opacity: .9; }
+
+/* En móvil, imagen debajo y ancho completo */
+@media (max-width: 820px){
+  .hero{ display: grid; gap: 16px; }
+  .hero img{ width: 100%; height: auto; }
+}

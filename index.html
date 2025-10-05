@@ -26,11 +26,14 @@
   <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon.png">
   <link rel="shortcut icon" href="assets/favicon.png">
 
-  <!-- CSS -->
+  <!-- CSS existente -->
   <link rel="preload" href="styles.css" as="style">
   <link rel="stylesheet" href="styles.css">
 
-  <!-- agregado: JS externo (defer) para respetar tu CSP -->
+  <!-- CSS nuevo SOLO para la navegación -->
+  <link rel="stylesheet" href="assets/nav.css">
+
+  <!-- JS externo (CSP-friendly) -->
   <script src="assets/main.js" defer></script>
 </head>
 <body>
@@ -42,12 +45,11 @@
         <span>Esperalopy</span>
       </a>
 
-      <!-- agregado: botón hamburguesa accesible -->
+      <!-- Botón hamburguesa a la derecha -->
       <button class="hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="main-menu">☰</button>
 
-      <!-- agregado: id para que el botón pueda controlar este bloque -->
+      <!-- Menú (panel) -->
       <div class="menu" id="main-menu">
-        <!-- agregado: link a Inicio para navegación completa -->
         <a href="#inicio">Inicio</a>
         <a href="#servicios">Servicios</a>
         <a href="#contacto" class="btn secondary">Contacto</a>
@@ -69,7 +71,7 @@
       <img src="assets/hero.png" alt="Portada de Esperalopy">
     </section>
 
-    <!-- SERVICIOS (ÚNICA sección de tarjetas) -->
+    <!-- SERVICIOS -->
     <section id="servicios" class="section">
       <div class="badge">Qué ofrecemos</div>
       <h2 style="margin:6px 0 16px 0">Servicios principales</h2>

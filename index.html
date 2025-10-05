@@ -29,6 +29,9 @@
   <!-- CSS -->
   <link rel="preload" href="styles.css" as="style">
   <link rel="stylesheet" href="styles.css">
+
+  <!-- agregado: JS externo (defer) para respetar tu CSP -->
+  <script src="assets/main.js" defer></script>
 </head>
 <body>
   <!-- HEADER -->
@@ -38,7 +41,14 @@
         <img src="assets/logo.png" alt="Logo Esperalopy">
         <span>Esperalopy</span>
       </a>
-      <div class="menu">
+
+      <!-- agregado: botón hamburguesa accesible -->
+      <button class="hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="main-menu">☰</button>
+
+      <!-- agregado: id para que el botón pueda controlar este bloque -->
+      <div class="menu" id="main-menu">
+        <!-- agregado: link a Inicio para navegación completa -->
+        <a href="#inicio">Inicio</a>
         <a href="#servicios">Servicios</a>
         <a href="#contacto" class="btn secondary">Contacto</a>
       </div>

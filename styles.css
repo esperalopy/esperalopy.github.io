@@ -267,3 +267,7 @@ img {
   opacity: .9;
   line-height: 1.45;
 }
+/* Igualar altura de tarjetas (opcional) */
+#servicios .grid3{ align-items: stretch; }
+#servicios .card{ height: 100%; display: flex; flex-direction: column; }
+#servicios .card p{ margin-top: auto; }

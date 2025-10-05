@@ -1,44 +1,102 @@
-/* Forzar alineación correcta del header */
-header.container{
-  position: sticky; top: 0; z-index: 50;
-  text-align: left !important;
-}
-header .nav{
-  display: flex; align-items: center;
-  justify-content: space-between;   /* logo izq — menú der */
-  text-align: left !important;
-}
-header .nav .brand{ display:flex; align-items:center; gap:8px; }
+/* ===== NAV - estilos para la barra y menú ===== */
 
+/* Header fijo y sin centrado automático */
+header.container{
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  text-align: left;
+}
+
+/* Barra de navegación en fila: logo a la izquierda, menú a la derecha */
+header .nav{
+  position: relative;                 /* referencia para el panel móvil */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;     /* <— clave para que no quede al medio */
+  gap: 16px;
+}
+
+/* Marca (tu logo) */
+header .nav .brand{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+}
+
+/* Menú (desktop) a la derecha */
 header .nav .menu{
   margin-left: auto;
-  display: flex; align-items: center; gap: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
-/* Ocultar hamburguesa en desktop sí o sí */
-.hamburger{ display: none !important; font-size:22px; background:transparent; border:0; padding:6px 10px; border-radius:8px; cursor:pointer; }
+/* Botón hamburguesa: oculto en desktop */
+.hamburger{
+  display: none;
+  font-size: 22px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
 
-/* ----- Mobile ----- */
-@media (max-width:820px){
-  .hamburger{ display: inline-block !important; margin-left: auto; }
+/* Estado activo del link del menú */
+.menu a.active{
+  outline: 1px solid rgba(56,189,248,.25);
+  background: rgba(56,189,248,.12);
+  border-radius: 10px;
+}
 
-  header .nav .menu{
-    position: absolute; top: 64px; left: 12px; right: 12px;
-    display: none; flex-direction: column; gap: 8px;
-    padding: 12px; margin: 0; border-radius: 12px;
-    background: var(--card, #0f162e); border: 1px solid var(--line, #1b2340);
+/* ===== Móvil ===== */
+@media (max-width: 820px){
+  /* Mostrar hamburguesa y mantenerla a la derecha */
+  .hamburger{
+    display: inline-block;
+    margin-left: auto;
   }
+
+  /* El menú se convierte en panel desplegable */
+  header .nav .menu{
+    position: absolute;
+    top: 64px;                        /* ajustá si tu header es más alto/bajo */
+    left: 12px;
+    right: 12px;
+    display: none;                    /* cerrado por defecto */
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    margin: 0;
+    border-radius: 12px;
+    background: var(--card, #0f162e);
+    border: 1px solid var(--line, #1b2340);
+    z-index: 60;
+  }
+
+  /* Abierto */
   header .nav .menu.open{ display: block; }
 
-  header .nav .menu a{ display:block; padding:10px 12px; border-radius:10px; }
+  /* Links ocupan ancho completo en el panel */
+  header .nav .menu a{
+    display: block;
+    padding: 10px 12px;
+    border-radius: 10px;
+  }
 }
 
-/* Resaltado opcional */
-.menu a.active{
-  outline:1px solid rgba(56,189,248,.25);
-  background:rgba(56,189,248,.12);
-  border-radius:10px;
+/* ===== Fix explícito por si hay estilos previos que centraban todo ===== */
+header .nav{
+  text-align: left !important;
 }
-header .nav{display:flex;align-items:center;justify-content:space-between}
-.hamburger{display:none}
-@media (max-width:820px){.hamburger{display:inline-block;margin-left:auto}}
+.hamburger{
+  /* oculto en desktop sí o sí */
+  display: none !important;
+}
+@media (max-width: 820px){
+  .hamburger{
+    display: inline-block !important;
+  }
+}

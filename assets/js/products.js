@@ -1,5 +1,5 @@
 // assets/js/products.js
-// Carga products.json (con rompe-caché) y aplica búsqueda/filtros correctamente.
+// Carga products.json (rompe caché), y al cambiar categoría limpia el buscador.
 (async function () {
   const TEL = '595994252213';
   const urlJSON = 'assets/products.json?v=' + Date.now(); // evita caché
@@ -13,22 +13,6 @@
 
   const fmtPYG = new Intl.NumberFormat('es-PY', { style: 'currency', currency: 'PYG', maximumFractionDigits: 0 });
 
-  // Botón "Limpiar filtros"
-  (function addClearBtn(){
-    if (!$filtro?.parentElement) return;
-    const btn = document.createElement('button');
-    btn.textContent = 'Limpiar';
-    btn.type = 'button';
-    btn.style.cssText = 'margin-left:8px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:#0f172a;color:#fff;cursor:pointer;';
-    btn.addEventListener('click', () => {
-      if ($buscar) $buscar.value = '';
-      if ($filtro) $filtro.value = '';
-      aplicarFiltros(); // muestra TODO
-    });
-    $filtro.parentElement.appendChild(btn);
-  })();
-
-  // Estado
   let productos = [];
 
   // Cargar JSON
@@ -61,6 +45,7 @@
     const frag = document.createDocumentFragment();
     lista.forEach(p => {
       const node = $tpl.content.cloneNode(true);
+
       const img = node.querySelector('img');
       img.src = p.imagen; img.alt = p.nombre; img.loading = 'lazy';
       img.onerror = () => { img.style.objectFit = 'contain'; img.style.opacity = '0.85'; };
@@ -87,7 +72,7 @@
     const q   = ($buscar?.value || '').toLowerCase().trim();
     const cat = $filtro?.value || ''; // "" = Todas
 
-    // ¡SIEMPRE filtramos sobre la lista completa 'productos'!
+    // Siempre filtramos sobre la lista completa
     const filtrados = productos.filter(p => {
       const texto = `${p.nombre ?? ''} ${p.descripcion ?? ''}`.toLowerCase();
       const okTexto = !q || texto.includes(q);
@@ -100,8 +85,15 @@
 
   // Eventos
   $buscar?.addEventListener('input', aplicarFiltros);
-  $filtro?.addEventListener('change', aplicarFiltros);
 
-  // Primera renderización: muestra TODO
+  // Al cambiar categoría, limpiamos el buscador y mostramos todo lo de esa categoría
+  $filtro?.addEventListener('change', () => {
+    if ($buscar) $buscar.value = ''; // ← clave para que "Todas" muestre todo
+    aplicarFiltros();
+  });
+
+  // Primera render: limpiamos buscador y mostramos todo
+  if ($buscar) $buscar.value = '';
+  if ($filtro) $filtro.value = ''; // “Todas”
   render(productos);
 })();

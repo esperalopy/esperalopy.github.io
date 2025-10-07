@@ -26,14 +26,12 @@
   <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon.png">
   <link rel="shortcut icon" href="assets/favicon.png">
 
-  <!-- CSS existente -->
+  <!-- CSS -->
   <link rel="preload" href="styles.css" as="style">
   <link rel="stylesheet" href="styles.css">
- 
-  <!-- CSS nuevo SOLO para la navegación -->
   <link rel="stylesheet" href="assets/nav.css">
 
-  <!-- JS externo (CSP-friendly) -->
+  <!-- JS existente -->
   <script src="assets/main.js" defer></script>
 </head>
 <body>
@@ -52,6 +50,7 @@
       <div class="menu" id="main-menu">
         <a href="#inicio">Inicio</a>
         <a href="#servicios">Servicios</a>
+        <a href="#productos">Productos</a>
         <a href="#contacto" class="btn secondary">Contacto</a>
       </div>
     </nav>
@@ -97,6 +96,50 @@
       </div>
     </section>
 
+    <!-- ==================== PRODUCTOS ==================== -->
+    <section id="productos" class="section">
+      <div class="badge">Catálogo</div>
+      <h2 style="margin:6px 0 16px 0">Productos destacados</h2>
+
+      <header style="display:flex; align-items:end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:20px;">
+        <p style="opacity:.8; margin:.25rem 0 0;">Fotos, precios en guaraníes y botón directo a WhatsApp.</p>
+        <div style="display:flex; gap:8px; align-items:center;">
+          <input id="buscar" type="search" placeholder="Buscar…" aria-label="Buscar productos"
+                 style="padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:#0f172a; color:#fff; min-width:220px;">
+          <select id="filtroCategoria" style="padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:#0f172a; color:#fff;">
+            <option value="">Todas</option>
+            <option value="Telefonía">Telefonía</option>
+            <option value="Computación">Computación</option>
+            <option value="Audio">Audio</option>
+            <option value="Electro">Electro</option>
+          </select>
+        </div>
+      </header>
+
+      <div id="gridProductos" aria-live="polite"
+           style="display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px;"></div>
+
+      <template id="tplProducto">
+        <article class="card" style="background:#0b1220; border:1px solid rgba(255,255,255,.1); border-radius:16px; overflow:hidden; display:flex; flex-direction:column;">
+          <div style="position:relative; aspect-ratio:1/1; background:#0d1b2a;">
+            <img alt="" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block;">
+            <span class="badge" style="position:absolute; top:10px; left:10px; background:#1d4ed8; color:#fff; padding:4px 8px; border-radius:999px; font-size:12px;"></span>
+          </div>
+          <div style="padding:12px 14px; display:flex; flex-direction:column; gap:6px;">
+            <h3 style="font-size:16px; margin:0; line-height:1.2;"></h3>
+            <p class="desc" style="opacity:.8; font-size:14px; margin:0; min-height:38px;"></p>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-top:auto;">
+              <strong class="precio" style="font-size:18px;"></strong>
+              <a class="btnWp" target="_blank" rel="noopener"
+                 style="text-decoration:none; padding:8px 10px; border-radius:10px; background:#22c55e; color:#0b1220; font-weight:600;">
+                WhatsApp
+              </a>
+            </div>
+          </div>
+        </article>
+      </template>
+    </section>
+
     <!-- CONTACTO -->
     <section id="contacto" class="section">
       <div class="badge">Contacto</div>
@@ -115,9 +158,13 @@
     </p>
     <p>
       <a href="#servicios">Servicios</a> ·
+      <a href="#productos">Productos</a> ·
       <a href="#contacto">Contacto</a>
     </p>
     <p>© 2025 Esperalopy. Todos los derechos reservados.</p>
   </footer>
+
+  <!-- Script que arma la grilla de productos -->
+  <script src="assets/js/products.js" defer></script>
 </body>
 </html>

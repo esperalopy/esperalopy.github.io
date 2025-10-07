@@ -14,7 +14,9 @@
   <meta property="og:locale" content="es_PY">
 
   <!-- Security-minded meta -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'">
+  <!-- Permitimos imágenes data: para placeholders y la carga del JSON/JS desde el mismo origen -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; img-src 'self' data:; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="X-Frame-Options" content="DENY">
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
@@ -116,9 +118,14 @@
         </div>
       </header>
 
+      <!-- Grilla que el JS va a completar -->
       <div id="gridProductos" aria-live="polite"
-           style="display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px;"></div>
+           style="display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px;">
+        <!-- Mensaje visible mientras carga/si hay problemas -->
+        <p style="opacity:.85;margin:.5rem 0">Cargando catálogo…</p>
+      </div>
 
+      <!-- Molde de tarjeta (si falta, el JS crea uno de emergencia) -->
       <template id="tplProducto">
         <article class="card" style="background:#0b1220; border:1px solid rgba(255,255,255,.1); border-radius:16px; overflow:hidden; display:flex; flex-direction:column;">
           <div style="position:relative; aspect-ratio:1/1; background:#0d1b2a;">
@@ -138,6 +145,7 @@
           </div>
         </article>
       </template>
+      <noscript><p style="opacity:.85">Para ver el catálogo, activá JavaScript.</p></noscript>
     </section>
 
     <!-- CONTACTO -->
@@ -164,7 +172,7 @@
     <p>© 2025 Esperalopy. Todos los derechos reservados.</p>
   </footer>
 
-  <!-- Script que arma la grilla de productos -->
-  <script src="assets/js/products.js" defer></script>
+  <!-- Catálogo: uso ?v para romper caché del navegador -->
+  <script src="assets/js/products.js?v=4" defer></script>
 </body>
 </html>

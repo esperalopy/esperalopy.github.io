@@ -1,63 +1,61 @@
 // assets/js/products.js
-// Carga productos desde assets/products.json; si falla, usa fallback local y muestra aviso.
-(async function () {
-  const URL_JSON = 'assets/products.json';
+// Versión de prueba: NO hace fetch. Renderiza una lista demo para verificar que todo el HTML funciona.
+(function () {
   const TEL = '595994252213';
 
   const $grid = document.getElementById('gridProductos');
   const $tpl = document.getElementById('tplProducto');
   const $buscar = document.getElementById('buscar');
   const $filtro = document.getElementById('filtroCategoria');
-
   if (!$grid || !$tpl) return;
 
   const fmtPYG = new Intl.NumberFormat('es-PY', { style: 'currency', currency: 'PYG', maximumFractionDigits: 0 });
 
-  const FALLBACK = [
+  // ======= DEMO LOCAL (sin fetch) =======
+  const productos = [
     {
-      "id": "jbl-510bt-negro",
-      "nombre": "Auriculares JBL inalámbricos",
-      "descripcion": "Sonido JBL Pure Bass, diseño plegable y hasta 40 h de reproducción.",
-      "precio": 100000,
-      "moneda": "PYG",
-      "categoria": "Audio",
-      "imagen": "assets/img/productos/auriculares-jbl-510bt.webp",
-      "estado": "Usado • Muy bueno",
-      "disponible": true
+      id: 'jbl-510bt-negro',
+      nombre: 'Auriculares JBL inalámbricos',
+      descripcion: 'Sonido JBL Pure Bass, diseño plegable y hasta 40 h de reproducción.',
+      precio: 100000,
+      moneda: 'PYG',
+      categoria: 'Audio',
+      imagen: 'assets/img/productos/auriculares-jbl-510bt.webp',
+      estado: 'Usado • Muy bueno',
+      disponible: true
+    },
+    {
+      id: 'demo-iph11',
+      nombre: 'iPhone 11 64GB (demo)',
+      descripcion: 'Equipo de muestra. Libre y en buen estado.',
+      precio: 2150000,
+      moneda: 'PYG',
+      categoria: 'Telefonía',
+      imagen: 'assets/feature2.png',
+      estado: 'Usado • Excelente',
+      disponible: true
+    },
+    {
+      id: 'demo-acer-a315',
+      nombre: 'Notebook Acer A315 (demo)',
+      descripcion: 'i5 • 8GB RAM • 256GB SSD. Ideal estudio.',
+      precio: 2900000,
+      moneda: 'PYG',
+      categoria: 'Computación',
+      imagen: 'assets/feature1.png',
+      estado: 'Seminuevo',
+      disponible: true
     }
   ];
+  // ======================================
 
   function linkWhatsApp(nombre, precioFmt, id) {
-    const texto = encodeURIComponent(
-      `Hola Esperalopy! Me interesa este producto:\n${nombre} – ${precioFmt} (ID: ${id}).\n¿Sigue disponible?`
-    );
+    const texto = encodeURIComponent(`Hola Esperalopy! Me interesa este producto:\n${nombre} – ${precioFmt} (ID: ${id}).\n¿Sigue disponible?`);
     return `https://api.whatsapp.com/send?phone=${TEL}&text=${texto}`;
-  }
-
-  let productos = [];
-  let aviso = '';
-
-  try {
-    const resp = await fetch(URL_JSON, { cache: 'no-store' });
-    if (!resp.ok) throw new Error(`HTTP ${resp.status} al leer ${URL_JSON}`);
-    const data = await resp.json();
-    if (!Array.isArray(data)) throw new Error('El JSON debe ser un array [] de productos');
-    productos = data;
-  } catch (e) {
-    console.error('[PRODUCTOS] Fallback por error:', e);
-    productos = FALLBACK;
-    aviso = '⚠️ Mostrando productos de prueba porque hubo un problema al leer assets/products.json';
   }
 
   function render(lista) {
     $grid.innerHTML = '';
-    if (aviso) {
-      const p = document.createElement('p');
-      p.style.opacity = '0.85';
-      p.style.margin = '8px 0 12px';
-      p.textContent = aviso;
-      $grid.appendChild(p);
-    }
     if (!lista.length) {
       const p = document.createElement('p');
       p.style.opacity = '0.85';
@@ -65,7 +63,6 @@
       $grid.appendChild(p);
       return;
     }
-
     const frag = document.createDocumentFragment();
     lista.forEach(p => {
       const node = $tpl.content.cloneNode(true);
@@ -113,5 +110,6 @@
   $buscar?.addEventListener('input', aplicarFiltros);
   $filtro?.addEventListener('change', aplicarFiltros);
 
+  // primera carga
   render(productos);
 })();

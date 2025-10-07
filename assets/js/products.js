@@ -8,7 +8,7 @@
     "categoria": "Audio",
     "imagen": "assets/img/productos/auriculares-jbl-510bt.webp",
     "estado": "Usado • Muy bueno",
-    "disponible": true"
+    "disponible": true
   },
   {
     "id": "demo-iph11",

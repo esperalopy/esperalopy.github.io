@@ -13,8 +13,7 @@
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_PY">
 
-  <!-- Security-minded meta -->
-  <!-- Permitimos imágenes data: para placeholders y la carga del JSON/JS desde el mismo origen -->
+  <!-- Seguridad básica -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; img-src 'self' data:; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
@@ -33,7 +32,7 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="assets/nav.css">
 
-  <!-- JS existente -->
+  <!-- JS del sitio -->
   <script src="assets/main.js" defer></script>
 </head>
 <body>
@@ -44,11 +43,7 @@
         <img src="assets/logo.png" alt="Logo Esperalopy">
         <span>Esperalopy</span>
       </a>
-
-      <!-- Botón hamburguesa a la derecha -->
       <button class="hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="main-menu">☰</button>
-
-      <!-- Menú (panel) -->
       <div class="menu" id="main-menu">
         <a href="#inicio">Inicio</a>
         <a href="#servicios">Servicios</a>
@@ -98,7 +93,7 @@
       </div>
     </section>
 
-    <!-- ==================== PRODUCTOS ==================== -->
+    <!-- PRODUCTOS -->
     <section id="productos" class="section">
       <div class="badge">Catálogo</div>
       <h2 style="margin:6px 0 16px 0">Productos destacados</h2>
@@ -115,17 +110,18 @@
             <option value="Audio">Audio</option>
             <option value="Electro">Electro</option>
           </select>
+          <button id="btnLimpiar" type="button"
+                  style="margin-left:8px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:#0f172a;color:#fff;cursor:pointer;">
+            Limpiar filtros
+          </button>
         </div>
       </header>
 
-      <!-- Grilla que el JS va a completar -->
       <div id="gridProductos" aria-live="polite"
            style="display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px;">
-        <!-- Mensaje visible mientras carga/si hay problemas -->
         <p style="opacity:.85;margin:.5rem 0">Cargando catálogo…</p>
       </div>
 
-      <!-- Molde de tarjeta (si falta, el JS crea uno de emergencia) -->
       <template id="tplProducto">
         <article class="card" style="background:#0b1220; border:1px solid rgba(255,255,255,.1); border-radius:16px; overflow:hidden; display:flex; flex-direction:column;">
           <div style="position:relative; aspect-ratio:1/1; background:#0d1b2a;">
@@ -172,7 +168,7 @@
     <p>© 2025 Esperalopy. Todos los derechos reservados.</p>
   </footer>
 
-  <!-- Catálogo: uso ?v para romper caché del navegador -->
+  <!-- Catálogo (rompe caché) -->
   <script src="assets/js/products.js?v=12" defer></script>
 </body>
 </html>

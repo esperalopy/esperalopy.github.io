@@ -151,6 +151,36 @@ header.container{
 .wp-float:focus{ outline: 3px solid #93c5fd; outline-offset: 3px; }
 
 /* ===========================
+   BOTÓN "VOLVER ARRIBA"
+   =========================== */
+.to-top{
+  position: fixed;
+  right: 18px;
+  bottom: 86px;                 /* encima del WhatsApp */
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  background: var(--bg-soft);
+  color: var(--text);
+  border-radius: 12px;
+  box-shadow: 0 8px 18px rgba(0,0,0,.22);
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease, filter .15s ease;
+  z-index: 40;
+}
+.to-top.show{
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.to-top:hover{ filter: brightness(1.05); }
+.to-top:focus{ outline: 3px solid #93c5fd; outline-offset: 2px; }
+
+/* ===========================
    RESPONSIVE
    =========================== */
 @media (max-width: 900px){

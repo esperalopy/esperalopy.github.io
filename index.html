@@ -32,7 +32,7 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="assets/nav.css">
 
-  <!-- JS del sitio (sin inline para respetar CSP) -->
+  <!-- JS del sitio -->
   <script src="assets/main.js" defer></script>
 </head>
 <body>
@@ -99,7 +99,6 @@
     <section id="productos" class="section">
       <div class="badge">Catálogo</div>
       <h2 style="margin:6px 0 8px 0">Productos destacados</h2>
-      <!-- Nota sin cuotas -->
       <p style="opacity:.7; margin:0 0 12px 0; font-size:.95rem;">
         Nota: por el momento <strong>no manejamos compras en cuotas</strong>. Aceptamos efectivo y transferencia.
       </p>
@@ -137,12 +136,17 @@
           <div style="padding:12px 14px; display:flex; flex-direction:column; gap:6px;">
             <h3 style="font-size:16px; margin:0; line-height:1.2;"></h3>
             <p class="desc" style="opacity:.8; font-size:14px; margin:0; min-height:38px;"></p>
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-top:auto;">
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:auto;">
               <strong class="precio" style="font-size:18px;"></strong>
+              <!-- El JS rellenará estos dos botones según estado -->
               <a class="btnWp" target="_blank" rel="noopener"
                  style="text-decoration:none; padding:8px 10px; border-radius:10px; background:#22c55e; color:#0b1220; font-weight:600;">
                 WhatsApp
               </a>
+              <button class="btnReservar"
+                      style="padding:8px 10px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:#1d4ed8; color:#fff; font-weight:600; cursor:pointer;">
+                Reservar
+              </button>
             </div>
           </div>
         </article>
@@ -182,14 +186,6 @@
         </details>
       </div>
     </section>
-
-    <!-- CONTACTO -->
-    <section id="contacto" class="section">
-      <div class="badge">Contacto</div>
-      <h2 style="margin:6px 0 16px 0">Hablemos</h2>
-      <p>Correo: <a href="mailto:esperalospy@gmail.com" rel="noopener">esperalospy@gmail.com</a></p>
-      <p>WhatsApp: <a href="https://wa.me/595994252213" target="_blank" rel="noopener noreferrer">+595 994 252 213</a></p>
-    </section>
   </main>
 
   <!-- FOOTER -->
@@ -215,6 +211,6 @@
   <a href="#inicio" class="to-top show" aria-label="Volver arriba">↑</a>
 
   <!-- Catálogo (rompe caché) -->
-  <script src="assets/js/products.js?v=13" defer></script>
+  <script src="assets/js/products.js?v=14" defer></script>
 </body>
 </html>

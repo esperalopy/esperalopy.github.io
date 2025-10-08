@@ -172,19 +172,11 @@
   <a href="https://wa.me/595994252213?text=Hola%20vengo%20de%20tu%20web"
      class="wp-float" aria-label="Escribir por WhatsApp">💬</a>
 
-  <!-- Botón Volver arriba + script que usa la clase .show (coincide con styles.css) -->
+  <!-- Botón Volver arriba (sin script inline) -->
   <button class="to-top" aria-label="Volver arriba">↑</button>
-  <script>
-    (function(){
-      const btn = document.querySelector('.to-top');
-      const toggle = () => btn.classList.toggle('show', window.scrollY > 600);
-      window.addEventListener('scroll', toggle, {passive:true});
-      btn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
-      toggle();
-    })();
-  </script>
 
-  <!-- Catálogo (rompe caché) -->
+  <!-- JS: UI (to-top) y Catálogo -->
+  <script src="assets/js/ui.js?v=1" defer></script>
   <script src="assets/js/products.js?v=12" defer></script>
 </body>
 </html>

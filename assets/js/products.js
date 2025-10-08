@@ -1,10 +1,10 @@
 // assets/js/products.js
-// Catálogo con búsqueda/filtro y CTA por WhatsApp.
-// Estados soportados:
-// - disponible === false  => "Agotado / Avísame" (botón ámbar)
-// - reservado === true    => "Reservado / Consultar" (badge rojo + tarjeta atenuada)
-// - estado: "Reservado"   => igual que reservado === true
-// - cualquier otro        => "WhatsApp" (botón verde)
+// Catálogo con búsqueda/filtro, WhatsApp y RESERVAR (localStorage).
+// Estados:
+// - disponible === false -> "Agotado / Avísame" (ámbar)
+// - reservado (global: p.reservado=true o estado="Reservado") -> badge rojo + "Reservado / Consultar"
+// - reservado (local: guardado en este dispositivo al tocar "Reservar") -> igual que reservado
+// - disponible -> "WhatsApp" (verde) + botón "Reservar" (azul)
 
 (async function () {
   const TEL = '595994252213';                // tu número sin + ni 0
@@ -41,6 +41,16 @@
        </svg>`
     );
 
+  // Helpers reserva local
+  const LS_KEY = 'esperalopy_reservas_v1';
+  function leerReservas() {
+    try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}'); }
+    catch { return {}; }
+  }
+  function escribirReservas(map) {
+    localStorage.setItem(LS_KEY, JSON.stringify(map));
+  }
+
   // Cargar catálogo
   let productos = [];
   try {
@@ -70,12 +80,16 @@
         <div style="padding:12px 14px; display:flex; flex-direction:column; gap:6px;">
           <h3 style="font-size:16px; margin:0; line-height:1.2;"></h3>
           <p class="desc" style="opacity:.8; font-size:14px; margin:0; min-height:38px;"></p>
-          <div style="display:flex; align-items:center; justify-content:space-between; margin-top:auto;">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:auto;">
             <strong class="precio" style="font-size:18px;"></strong>
             <a class="btnWp" target="_blank" rel="noopener"
                style="text-decoration:none; padding:8px 10px; border-radius:10px; background:#22c55e; color:#0b1220; font-weight:600;">
               WhatsApp
             </a>
+            <button class="btnReservar"
+                    style="padding:8px 10px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:#1d4ed8; color:#fff; font-weight:600; cursor:pointer;">
+              Reservar
+            </button>
           </div>
         </div>
       </article>
@@ -88,6 +102,7 @@
   function render(lista) {
     if (!$grid) return;
     const tpl = ensureTemplate();
+    const reservasLocal = leerReservas();
 
     $grid.innerHTML = '';
     const frag = document.createDocumentFragment();
@@ -103,64 +118,107 @@
       const $desc = node.querySelector('.desc');
       const $precio = node.querySelector('.precio');
       const $cta = node.querySelector('.btnWp');
+      const $reservar = node.querySelector('.btnReservar');
 
       // Imagen
       img.src = p.imagen || IMG_FALLBACK;
       img.alt = p.nombre || 'Producto';
 
-      // Estado "Reservado"
-      const isReservado = p.reservado === true || (typeof p.estado === 'string' && p.estado.trim().toLowerCase() === 'reservado');
+      // Estado calculado
+      const isReservadoGlobal = p.reservado === true || (typeof p.estado === 'string' && p.estado.trim().toLowerCase() === 'reservado');
+      const isReservadoLocal  = reservasLocal[p.id] === true;
+      const isReservado = isReservadoGlobal || isReservadoLocal;
+      const isAgotado = p.disponible === false;
 
       // Badge
       if (isReservado) {
         $badge.textContent = 'Reservado';
         $badge.style.background = '#ef4444'; // rojo
         $badge.style.color = '#fff';
-      } else if (p.estado) {
+      } else if (p.estado && !isAgotado) {
         $badge.textContent = p.estado;
-        $badge.style.background = '#1d4ed8'; // azul por defecto
+        $badge.style.background = '#1d4ed8';
         $badge.style.color = '#fff';
+      } else if (isAgotado) {
+        $badge.textContent = 'Agotado';
+        $badge.style.background = '#f59e0b'; // ámbar
+        $badge.style.color = '#0b1220';
       } else {
         $badge.style.display = 'none';
       }
 
-      // Título, descripción, precio
+      // Texto
       $title.textContent = p.nombre || 'Producto sin nombre';
       $desc.textContent = p.descripcion || '';
       const precioNum = typeof p.precio === 'number' ? p.precio : 0;
       $precio.textContent = fmtPYG.format(precioNum);
 
-      // Mensajes para WhatsApp
+      // Mensajes Whatsapp
       const base = `Hola Esperalopy! Me interesa este producto:\n${p.nombre || ''} – ${fmtPYG.format(precioNum)} (ID: ${p.id || 's/id'}).\n`;
       const textoDisponible   = encodeURIComponent(base + '¿Sigue disponible?');
       const textoReservado    = encodeURIComponent(base + 'Veo que está reservado. ¿Puedo confirmar si se libera o dejar mis datos?');
       const textoNoDisponible = encodeURIComponent(base + 'Está agotado. Por favor, avísenme cuando llegue nuevamente 🙏');
+      const textoQuieroReservar = encodeURIComponent(base + 'Quisiera reservarlo, por favor. ¿Cómo seguimos?');
 
-      // Apariencia y CTA según estado
-      if (p.disponible === false) {
-        // AGOTADO
+      // Apariencia + CTA según estado
+      if (isAgotado) {
         article.style.opacity = '0.92';
         $cta.textContent = 'Agotado / Avísame';
         $cta.href = `https://wa.me/${TEL}?text=${textoNoDisponible}`;
-        $cta.style.background = '#f59e0b'; // ámbar
+        $cta.style.background = '#f59e0b';
         $cta.style.color = '#0b1220';
         $cta.title = 'Producto agotado: tocá para avisarte cuando llegue';
+        // Reservar no aplica
+        $reservar.style.display = 'none';
       } else if (isReservado) {
-        // RESERVADO
         article.style.opacity = '0.9';
         $cta.textContent = 'Reservado / Consultar';
         $cta.href = `https://wa.me/${TEL}?text=${textoReservado}`;
-        $cta.style.background = '#ef4444'; // rojo
+        $cta.style.background = '#ef4444';
         $cta.style.color = '#fff';
         $cta.title = 'Producto reservado: consultá por disponibilidad';
+
+        // Botón para cancelar reserva local (solo si es local)
+        if (isReservadoLocal && !isReservadoGlobal) {
+          $reservar.textContent = 'Quitar reserva (este dispositivo)';
+          $reservar.style.display = 'inline-block';
+          $reservar.style.background = '#0f172a';
+          $reservar.style.border = '1px solid rgba(255,255,255,.25)';
+          $reservar.onclick = () => {
+            const map = leerReservas();
+            delete map[p.id];
+            escribirReservas(map);
+            render(lista); // re-render con estado actualizado
+          };
+        } else {
+          $reservar.style.display = 'none';
+        }
       } else {
-        // DISPONIBLE
+        // Disponible
         article.style.opacity = '1';
         $cta.textContent = 'WhatsApp';
         $cta.href = `https://wa.me/${TEL}?text=${textoDisponible}`;
-        $cta.style.background = '#22c55e'; // verde
+        $cta.style.background = '#22c55e';
         $cta.style.color = '#0b1220';
         $cta.title = 'Consultar por WhatsApp';
+
+        // Botón Reservar activo
+        $reservar.textContent = 'Reservar';
+        $reservar.style.display = 'inline-block';
+        $reservar.style.background = '#1d4ed8';
+        $reservar.style.color = '#fff';
+        $reservar.onclick = () => {
+          // guardar reserva local
+          const map = leerReservas();
+          map[p.id] = true;
+          escribirReservas(map);
+
+          // abrir WhatsApp para reservar
+          window.open(`https://wa.me/${TEL}?text=${textoQuieroReservar}`, '_blank');
+
+          // refrescar UI
+          render(lista);
+        };
       }
 
       frag.appendChild(node);

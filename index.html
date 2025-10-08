@@ -168,25 +168,19 @@
     <p>© 2025 Esperalopy. Todos los derechos reservados.</p>
   </footer>
 
-  <!-- Botón flotante WhatsApp (ya agregado en el paso 1) -->
+  <!-- Botón flotante WhatsApp -->
   <a href="https://wa.me/595994252213?text=Hola%20vengo%20de%20tu%20web"
      class="wp-float" aria-label="Escribir por WhatsApp">💬</a>
 
-  <!-- Botón Volver arriba + script -->
-  <button class="to-top" aria-label="Volver arriba" style="position:fixed;right:18px;bottom:86px;display:none;">↑</button>
+  <!-- Botón Volver arriba + script que usa la clase .show (coincide con styles.css) -->
+  <button class="to-top" aria-label="Volver arriba">↑</button>
   <script>
     (function(){
       const btn = document.querySelector('.to-top');
-      const show = () => {
-        if (window.scrollY > 600) {
-          btn.style.display = 'grid';
-        } else {
-          btn.style.display = 'none';
-        }
-      };
-      window.addEventListener('scroll', show, {passive:true});
+      const toggle = () => btn.classList.toggle('show', window.scrollY > 600);
+      window.addEventListener('scroll', toggle, {passive:true});
       btn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
-      show();
+      toggle();
     })();
   </script>
 

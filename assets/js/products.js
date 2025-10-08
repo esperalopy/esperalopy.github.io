@@ -1,168 +1,163 @@
 // assets/js/products.js
-// Muestra productos SIEMPRE: primero embebidos (instantáneo) y luego
-// intenta cargar assets/products.json (rompe caché). Si sale bien, reemplaza.
-// Búsqueda y filtro por categoría incluidos.
+// Catálogo con búsqueda/filtro y CTA por WhatsApp.
+// Si disponible === false => "Agotado / Avísame" con mensaje prellenado.
 
-(function () {
-  const TEL = '595994252213';
-  const URL_JSON = 'assets/products.json?v=' + Date.now();
+(async function () {
+  const TEL = '595994252213';                // tu número sin + ni 0
+  const URL_JSON = 'assets/products.json';   // fuente del catálogo
 
-  const $grid   = document.getElementById('gridProductos');
-  const $tpl    = document.getElementById('tplProducto');
-  const $buscar = document.getElementById('buscar');
-  const $filtro = document.getElementById('filtroCategoria');
-  const $btnClr = document.getElementById('btnLimpiar');
-  if (!$grid) return;
+  // Elementos del DOM
+  const $grid    = document.getElementById('gridProductos');
+  const $tpl     = document.getElementById('tplProducto');
+  const $buscar  = document.getElementById('buscar');
+  const $filtro  = document.getElementById('filtroCategoria');
+  const $limpiar = document.getElementById('btnLimpiar');
 
-  // Layout base
-  $grid.style.display = 'grid';
-  $grid.style.gridTemplateColumns = 'repeat(auto-fill,minmax(220px,1fr))';
-  $grid.style.gap = '16px';
+  // Formateador a guaraníes
+  const fmtPYG = new Intl.NumberFormat('es-PY', {
+    style: 'currency', currency: 'PYG', maximumFractionDigits: 0
+  });
 
-  const fmtPYG = new Intl.NumberFormat('es-PY', { style: 'currency', currency: 'PYG', maximumFractionDigits: 0 });
+  // Placeholder SVG si falta imagen
+  const IMG_FALLBACK =
+    'data:image/svg+xml;utf8,' +
+    encodeURIComponent(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
+         <defs>
+           <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+             <stop offset="0" stop-color="#0d1b2a"/>
+             <stop offset="1" stop-color="#132238"/>
+           </linearGradient>
+         </defs>
+         <rect width="600" height="600" fill="url(#g)"/>
+         <text x="50%" y="50%" dy=".35em" text-anchor="middle"
+               fill="#94a3b8" font-family="sans-serif" font-size="22">
+           Sin imagen
+         </text>
+       </svg>`
+    );
 
-  // Catálogo embebido (incluye el JBL)
-  let base = [
-    {
-      "id": "jbl-510bt-negro",
-      "nombre": "Auriculares JBL inalámbricos",
-      "descripcion": "Sonido JBL Pure Bass. Plegables y cómodos, hasta 40 h de batería.",
-      "precio": 100000,
-      "moneda": "PYG",
-      "categoria": "Audio",
-      "imagen": "assets/img/productos/auriculares-jbl-510bt.webp",
-      "estado": "Usado • Muy bueno",
-      "disponible": true
-    },
-    {
-      "id": "demo-notebook-basic",
-      "nombre": "Notebook usada – buena",
-      "descripcion": "Equipo listo para estudio/trabajo. Revisión básica hecha.",
-      "precio": 2200000,
-      "moneda": "PYG",
-      "categoria": "Computación",
-      "imagen": "assets/feature1.png",
-      "estado": "Usado • Bueno",
-      "disponible": true
-    },
-    {
-      "id": "demo-android",
-      "nombre": "Smartphone – liberado",
-      "descripcion": "Pantalla nítida, batería OK. Incluye cargador.",
-      "precio": 950000,
-      "moneda": "PYG",
-      "categoria": "Telefonía",
-      "imagen": "assets/feature2.png",
-      "estado": "Usado • Muy bueno",
-      "disponible": true
-    },
-    {
-      "id": "demo-parlante",
-      "nombre": "Parlante portátil",
-      "descripcion": "Sonido potente, tamaño compacto.",
-      "precio": 320000,
-      "moneda": "PYG",
-      "categoria": "Audio",
-      "imagen": "assets/feature3.png",
-      "estado": "Seminuevo",
-      "disponible": false
+  // Cargar catálogo
+  let productos = [];
+  try {
+    const resp = await fetch(URL_JSON, { cache: 'no-store' });
+    if (!resp.ok) throw new Error('No se pudo cargar assets/products.json');
+    productos = await resp.json();
+    if (!Array.isArray(productos)) throw new Error('El JSON debe ser un array de productos');
+  } catch (err) {
+    console.error(err);
+    if ($grid) {
+      $grid.innerHTML = `<p style="opacity:.85">No pudimos cargar el catálogo. Verificá <code>assets/products.json</code>.</p>`;
     }
-  ];
-
-  function linkWhatsApp(nombre, precioFmt, id) {
-    const texto = encodeURIComponent(`Hola Esperalopy! Me interesa este producto:\n${nombre} – ${precioFmt} (ID: ${id}).\n¿Sigue disponible?`);
-    return `https://api.whatsapp.com/send?phone=${TEL}&text=${texto}`;
+    return;
   }
 
+  // Asegurar template (si falta, crear uno mínimo)
+  function ensureTemplate() {
+    if ($tpl) return $tpl;
+    const t = document.createElement('template');
+    t.id = 'tplProducto';
+    t.innerHTML = `
+      <article class="card" style="background:#0b1220; border:1px solid rgba(255,255,255,.1); border-radius:16px; overflow:hidden; display:flex; flex-direction:column;">
+        <div style="position:relative; aspect-ratio:1/1; background:#0d1b2a;">
+          <img alt="" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block;">
+          <span class="badge" style="position:absolute; top:10px; left:10px; background:#1d4ed8; color:#fff; padding:4px 8px; border-radius:999px; font-size:12px;"></span>
+        </div>
+        <div style="padding:12px 14px; display:flex; flex-direction:column; gap:6px;">
+          <h3 style="font-size:16px; margin:0; line-height:1.2;"></h3>
+          <p class="desc" style="opacity:.8; font-size:14px; margin:0; min-height:38px;"></p>
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-top:auto;">
+            <strong class="precio" style="font-size:18px;"></strong>
+            <a class="btnWp" target="_blank" rel="noopener"
+               style="text-decoration:none; padding:8px 10px; border-radius:10px; background:#22c55e; color:#0b1220; font-weight:600;">
+              WhatsApp
+            </a>
+          </div>
+        </div>
+      </article>
+    `;
+    document.body.appendChild(t);
+    return t;
+  }
+
+  // Render de tarjetas
   function render(lista) {
+    if (!$grid) return;
+    const tpl = ensureTemplate();
+
     $grid.innerHTML = '';
-    if (!lista.length) {
-      const p = document.createElement('p');
-      p.style.opacity = '0.85';
-      p.textContent = 'No hay productos con esos filtros.';
-      $grid.appendChild(p);
-      return;
-    }
     const frag = document.createDocumentFragment();
 
     lista.forEach(p => {
-      let node;
-      if ($tpl) {
-        node = $tpl.content.cloneNode(true);
-      } else {
-        // tarjeta de emergencia si no hay <template>
-        const art = document.createElement('article');
-        art.style.cssText = 'background:#0b1220;border:1px solid rgba(255,255,255,.1);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;';
-        art.innerHTML = `
-          <div style="position:relative;aspect-ratio:1/1;background:#0d1b2a;">
-            <img alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">
-            <span class="badge" style="position:absolute;top:10px;left:10px;background:#1d4ed8;color:#fff;padding:4px 8px;border-radius:999px;font-size:12px;"></span>
-          </div>
-          <div style="padding:12px 14px;display:flex;flex-direction:column;gap:6px;">
-            <h3 style="font-size:16px;margin:0;line-height:1.2;"></h3>
-            <p class="desc" style="opacity:.8;font-size:14px;margin:0;min-height:38px;"></p>
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:auto;">
-              <strong class="precio" style="font-size:18px;"></strong>
-              <a class="btnWp" target="_blank" rel="noopener"
-                 style="text-decoration:none;padding:8px 10px;border-radius:10px;background:#22c55e;color:#0b1220;font-weight:600;">WhatsApp</a>
-            </div>
-          </div>`;
-        const tpl = document.createElement('template'); tpl.content.appendChild(art);
-        node = tpl.content.cloneNode(true);
-      }
+      const node = tpl.content.cloneNode(true);
 
+      // Imagen
       const img = node.querySelector('img');
-      img.src = p.imagen; img.alt = p.nombre; img.loading = 'lazy';
-      img.onerror = () => { img.style.objectFit = 'contain'; img.style.opacity = '0.85'; };
+      img.src = p.imagen || IMG_FALLBACK;
+      img.alt = p.nombre || 'Producto';
 
-      node.querySelector('.badge').textContent = p.estado || '';
-      node.querySelector('h3').textContent    = p.nombre || 'Producto';
+      // Estado / badge
+      const $badge = node.querySelector('.badge');
+      if (p.estado) { $badge.textContent = p.estado; } else { $badge.style.display = 'none'; }
+
+      // Texto
+      node.querySelector('h3').textContent = p.nombre || 'Producto sin nombre';
       node.querySelector('.desc').textContent = p.descripcion || '';
-      const precioFmt = fmtPYG.format(Number(p.precio || 0));
-      node.querySelector('.precio').textContent = precioFmt;
+      const precioNum = typeof p.precio === 'number' ? p.precio : 0;
+      node.querySelector('.precio').textContent = fmtPYG.format(precioNum);
 
-      const a = node.querySelector('.btnWp');
-      a.href = linkWhatsApp(p.nombre, precioFmt, p.id || '');
-      if (p.disponible === false) { a.textContent = 'Agotado / Consultar'; a.style.opacity = 0.7; }
+      // WhatsApp CTA
+      const $cta = node.querySelector('.btnWp');
+      const base = `Hola Esperalopy! Me interesa este producto:\n${p.nombre || ''} – ${fmtPYG.format(precioNum)} (ID: ${p.id || 's/id'}).\n`;
+      const textoDisponible   = encodeURIComponent(base + '¿Sigue disponible?');
+      const textoNoDisponible = encodeURIComponent(base + 'Está agotado. Por favor, avísenme cuando llegue nuevamente 🙏');
+
+      if (p.disponible === false) {
+        $cta.textContent = 'Agotado / Avísame';
+        $cta.href = `https://wa.me/${TEL}?text=${textoNoDisponible}`;
+        $cta.style.background = '#f59e0b'; // ámbar
+        $cta.style.color = '#0b1220';
+        $cta.title = 'Producto agotado: tocá para avisarte cuando llegue';
+      } else {
+        $cta.textContent = 'WhatsApp';
+        $cta.href = `https://wa.me/${TEL}?text=${textoDisponible}`;
+        $cta.style.background = '#22c55e'; // verde
+        $cta.style.color = '#0b1220';
+        $cta.title = 'Consultar por WhatsApp';
+      }
 
       frag.appendChild(node);
     });
+
     $grid.appendChild(frag);
+
+    if (!lista.length) {
+      $grid.innerHTML = `<p style="opacity:.85;margin:.5rem 0">No se encontraron productos con ese filtro.</p>`;
+    }
   }
 
+  // Filtros
   function aplicarFiltros() {
-    const q   = ($buscar?.value || '').toLowerCase().trim();
+    const q = ($buscar?.value || '').toLowerCase().trim();
     const cat = $filtro?.value || '';
-    const filtrados = base.filter(p => {
-      const texto = `${p.nombre ?? ''} ${p.descripcion ?? ''}`.toLowerCase();
+    const filtrados = productos.filter(p => {
+      const texto = `${p.nombre || ''} ${p.descripcion || ''}`.toLowerCase();
       const okTexto = !q || texto.includes(q);
-      const okCat   = !cat || p.categoria === cat;
+      const okCat = !cat || (p.categoria === cat);
       return okTexto && okCat;
     });
     render(filtrados);
   }
 
-  // Primera vista (embebidos)
-  if ($buscar) $buscar.value = '';
-  if ($filtro) $filtro.value = '';
-  render(base);
-
-  // Listeners
+  // Eventos
   $buscar?.addEventListener('input', aplicarFiltros);
-  $filtro?.addEventListener('change', () => { if ($buscar) $buscar.value = ''; aplicarFiltros(); });
-  $btnClr?.addEventListener('click', () => { if ($buscar) $buscar.value = ''; if ($filtro) $filtro.value = ''; render(base); });
+  $filtro?.addEventListener('change', aplicarFiltros);
+  $limpiar?.addEventListener('click', () => {
+    if ($buscar) $buscar.value = '';
+    if ($filtro) $filtro.value = '';
+    render(productos);
+  });
 
-  // Intento de carga del JSON real (si existe, reemplaza)
-  fetch(URL_JSON, { cache: 'no-store' })
-    .then(r => (r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status))))
-    .then(data => {
-      if (!Array.isArray(data)) throw new Error('JSON no es array');
-      base = data;
-      if ($buscar) $buscar.value = '';
-      if ($filtro) $filtro.value = '';
-      render(base);
-    })
-    .catch(err => {
-      console.warn('[catalogo] No se pudo leer assets/products.json. Se muestran los embebidos.', err);
-    });
+  // Inicial
+  render(productos);
 })();

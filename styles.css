@@ -1,5 +1,7 @@
 /* ===========================
-   Esperalopy — styles.css
+   Esperalopy — styles.css (completo)
+   Incluye: base, header sticky, hero, cards, catálogo,
+   botón WhatsApp, botón Volver Arriba y FAQ (acordeón)
    =========================== */
 
 /* Variables y base */
@@ -114,6 +116,70 @@ header.container{
   display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:2.8em;
 }
 #gridProductos .precio{ font-size:18px; }
+
+/* ===========================
+   FAQ (acordeón nativo <details>)
+   =========================== */
+.faq{
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+.faq details{
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: border-color .15s ease, background .15s ease, box-shadow .15s ease;
+}
+.faq details:hover{
+  border-color: var(--border-strong);
+  box-shadow: 0 6px 16px rgba(0,0,0,.22);
+}
+/* Cabecera */
+.faq summary{
+  list-style: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  user-select: none;
+}
+.faq summary::-webkit-details-marker{ display: none; }
+/* Chevron */
+.faq summary::after{
+  content: "▸";
+  font-size: 18px;
+  line-height: 1;
+  margin-left: auto;
+  color: var(--muted);
+  transition: transform .18s ease;
+}
+.faq details[open] > summary::after{
+  transform: rotate(90deg);
+}
+/* Cuerpo */
+.faq details > p{
+  margin: 0;
+  padding: 0 16px 14px 16px;
+  color: var(--text);
+  opacity: .95;
+  /* animación simple de apertura */
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .25s ease, padding-top .25s ease, opacity .25s ease;
+}
+.faq details[open] > p{
+  padding-top: 4px;
+  max-height: 400px; /* suficiente para 3–4 líneas */
+  opacity: 1;
+}
+/* Enlaces dentro del FAQ */
+.faq a{ color: var(--text); text-decoration: underline; }
+.faq summary:focus{ outline: 3px solid #93c5fd; outline-offset: 2px; }
 
 /* ===========================
    FOOTER

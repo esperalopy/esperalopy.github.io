@@ -1,6 +1,10 @@
 // assets/js/products.js
 // Catálogo con búsqueda/filtro y CTA por WhatsApp.
-// Si disponible === false => "Agotado / Avísame" con mensaje prellenado.
+// Estados soportados:
+// - disponible === false  => "Agotado / Avísame" (botón ámbar)
+// - reservado === true    => "Reservado / Consultar" (badge rojo + tarjeta atenuada)
+// - estado: "Reservado"   => igual que reservado === true
+// - cualquier otro        => "WhatsApp" (botón verde)
 
 (async function () {
   const TEL = '595994252213';                // tu número sin + ni 0
@@ -91,34 +95,67 @@
     lista.forEach(p => {
       const node = tpl.content.cloneNode(true);
 
-      // Imagen
+      // Referencias
+      const article = node.querySelector('article') || node.firstElementChild;
       const img = node.querySelector('img');
+      const $badge = node.querySelector('.badge');
+      const $title = node.querySelector('h3');
+      const $desc = node.querySelector('.desc');
+      const $precio = node.querySelector('.precio');
+      const $cta = node.querySelector('.btnWp');
+
+      // Imagen
       img.src = p.imagen || IMG_FALLBACK;
       img.alt = p.nombre || 'Producto';
 
-      // Estado / badge
-      const $badge = node.querySelector('.badge');
-      if (p.estado) { $badge.textContent = p.estado; } else { $badge.style.display = 'none'; }
+      // Estado "Reservado"
+      const isReservado = p.reservado === true || (typeof p.estado === 'string' && p.estado.trim().toLowerCase() === 'reservado');
 
-      // Texto
-      node.querySelector('h3').textContent = p.nombre || 'Producto sin nombre';
-      node.querySelector('.desc').textContent = p.descripcion || '';
+      // Badge
+      if (isReservado) {
+        $badge.textContent = 'Reservado';
+        $badge.style.background = '#ef4444'; // rojo
+        $badge.style.color = '#fff';
+      } else if (p.estado) {
+        $badge.textContent = p.estado;
+        $badge.style.background = '#1d4ed8'; // azul por defecto
+        $badge.style.color = '#fff';
+      } else {
+        $badge.style.display = 'none';
+      }
+
+      // Título, descripción, precio
+      $title.textContent = p.nombre || 'Producto sin nombre';
+      $desc.textContent = p.descripcion || '';
       const precioNum = typeof p.precio === 'number' ? p.precio : 0;
-      node.querySelector('.precio').textContent = fmtPYG.format(precioNum);
+      $precio.textContent = fmtPYG.format(precioNum);
 
-      // WhatsApp CTA
-      const $cta = node.querySelector('.btnWp');
+      // Mensajes para WhatsApp
       const base = `Hola Esperalopy! Me interesa este producto:\n${p.nombre || ''} – ${fmtPYG.format(precioNum)} (ID: ${p.id || 's/id'}).\n`;
       const textoDisponible   = encodeURIComponent(base + '¿Sigue disponible?');
+      const textoReservado    = encodeURIComponent(base + 'Veo que está reservado. ¿Puedo confirmar si se libera o dejar mis datos?');
       const textoNoDisponible = encodeURIComponent(base + 'Está agotado. Por favor, avísenme cuando llegue nuevamente 🙏');
 
+      // Apariencia y CTA según estado
       if (p.disponible === false) {
+        // AGOTADO
+        article.style.opacity = '0.92';
         $cta.textContent = 'Agotado / Avísame';
         $cta.href = `https://wa.me/${TEL}?text=${textoNoDisponible}`;
         $cta.style.background = '#f59e0b'; // ámbar
         $cta.style.color = '#0b1220';
         $cta.title = 'Producto agotado: tocá para avisarte cuando llegue';
+      } else if (isReservado) {
+        // RESERVADO
+        article.style.opacity = '0.9';
+        $cta.textContent = 'Reservado / Consultar';
+        $cta.href = `https://wa.me/${TEL}?text=${textoReservado}`;
+        $cta.style.background = '#ef4444'; // rojo
+        $cta.style.color = '#fff';
+        $cta.title = 'Producto reservado: consultá por disponibilidad';
       } else {
+        // DISPONIBLE
+        article.style.opacity = '1';
         $cta.textContent = 'WhatsApp';
         $cta.href = `https://wa.me/${TEL}?text=${textoDisponible}`;
         $cta.style.background = '#22c55e'; // verde

@@ -1,10 +1,7 @@
 // assets/js/products.js
 // Catálogo con búsqueda/filtro, WhatsApp y RESERVAR (localStorage).
-// Estados:
-// - disponible === false -> "Agotado / Avísame" (ámbar)
-// - reservado (global: p.reservado=true o estado="Reservado") -> badge rojo + "Reservado / Consultar"
-// - reservado (local: guardado en este dispositivo al tocar "Reservar") -> igual que reservado
-// - disponible -> "WhatsApp" (verde) + botón "Reservar" (azul)
+// Ajuste de layout: margen superior en la fila de botones y flex-wrap
+// para que no se corten en el borde inferior del card.
 
 (async function () {
   const TEL = '595994252213';                // tu número sin + ni 0
@@ -77,17 +74,17 @@
           <img alt="" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block;">
           <span class="badge" style="position:absolute; top:10px; left:10px; background:#1d4ed8; color:#fff; padding:4px 8px; border-radius:999px; font-size:12px;"></span>
         </div>
-        <div style="padding:12px 14px; display:flex; flex-direction:column; gap:6px;">
+        <div style="padding:14px; display:flex; flex-direction:column; gap:8px;">
           <h3 style="font-size:16px; margin:0; line-height:1.2;"></h3>
           <p class="desc" style="opacity:.8; font-size:14px; margin:0; min-height:38px;"></p>
-          <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:auto;">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:12px; flex-wrap:wrap;">
             <strong class="precio" style="font-size:18px;"></strong>
             <a class="btnWp" target="_blank" rel="noopener"
-               style="text-decoration:none; padding:8px 10px; border-radius:10px; background:#22c55e; color:#0b1220; font-weight:600;">
+               style="text-decoration:none; padding:10px 12px; border-radius:10px; background:#22c55e; color:#0b1220; font-weight:600; display:inline-block; line-height:1;">
               WhatsApp
             </a>
             <button class="btnReservar"
-                    style="padding:8px 10px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:#1d4ed8; color:#fff; font-weight:600; cursor:pointer;">
+                    style="padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:#1d4ed8; color:#fff; font-weight:600; cursor:pointer; display:inline-block; line-height:1;">
               Reservar
             </button>
           </div>
@@ -168,7 +165,6 @@
         $cta.style.background = '#f59e0b';
         $cta.style.color = '#0b1220';
         $cta.title = 'Producto agotado: tocá para avisarte cuando llegue';
-        // Reservar no aplica
         $reservar.style.display = 'none';
       } else if (isReservado) {
         article.style.opacity = '0.9';
@@ -178,7 +174,6 @@
         $cta.style.color = '#fff';
         $cta.title = 'Producto reservado: consultá por disponibilidad';
 
-        // Botón para cancelar reserva local (solo si es local)
         if (isReservadoLocal && !isReservadoGlobal) {
           $reservar.textContent = 'Quitar reserva (este dispositivo)';
           $reservar.style.display = 'inline-block';
@@ -188,7 +183,7 @@
             const map = leerReservas();
             delete map[p.id];
             escribirReservas(map);
-            render(lista); // re-render con estado actualizado
+            render(lista);
           };
         } else {
           $reservar.style.display = 'none';
@@ -208,15 +203,10 @@
         $reservar.style.background = '#1d4ed8';
         $reservar.style.color = '#fff';
         $reservar.onclick = () => {
-          // guardar reserva local
           const map = leerReservas();
           map[p.id] = true;
           escribirReservas(map);
-
-          // abrir WhatsApp para reservar
           window.open(`https://wa.me/${TEL}?text=${textoQuieroReservar}`, '_blank');
-
-          // refrescar UI
           render(lista);
         };
       }

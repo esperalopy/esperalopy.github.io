@@ -32,31 +32,25 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="assets/nav.css">
 
-  <!-- Micro-animaciones + Toast (solo este bloque nuevo) -->
+  <!-- Micro-animaciones + Toast -->
   <style>
-    /* Elevación suave al pasar el mouse por tarjeta */
     .card{
       transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
       will-change: transform;
     }
     .card:hover{
-      transform: translateY(-4px);
-      box-shadow: 0 10px 24px rgba(0,0,0,.25);
-      border-color: rgba(255,255,255,.18) !important;
+      transform: translateY(-6px);
+      box-shadow: 0 14px 28px rgba(0,0,0,.3);
+      border-color: rgba(255,255,255,.2) !important;
     }
-    /* Botones con sutil escala en hover */
-    .card a.btnWp,
-    .card .btnReservar{
+    .card a.btnWp, .card .btnReservar{
       transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
     }
-    .card a.btnWp:hover,
-    .card .btnReservar:hover{
-      transform: translateY(-1px);
-      filter: brightness(1.02);
-      box-shadow: 0 6px 14px rgba(0,0,0,.25);
+    .card a.btnWp:hover, .card .btnReservar:hover{
+      transform: translateY(-2px) scale(1.015);
+      filter: brightness(1.04);
+      box-shadow: 0 10px 18px rgba(0,0,0,.3);
     }
-
-    /* Toast */
     #toast{
       position: fixed;
       left: 50%;
@@ -74,10 +68,7 @@
       transition: opacity .2s ease, transform .2s ease;
       z-index: 1000;
     }
-    #toast.show{
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
+    #toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
   </style>
 
   <!-- JS del sitio -->
@@ -153,7 +144,7 @@
 
       <header style="display:flex; align-items:end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:20px;">
         <p style="opacity:.8; margin:.25rem 0 0;">Fotos, precios en guaraníes y botón directo a WhatsApp.</p>
-        <div style="display:flex; gap:8px; align-items:center;">
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
           <input id="buscar" type="search" placeholder="Buscar…" aria-label="Buscar productos"
                  style="padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:#0f172a; color:#fff; min-width:220px;">
           <select id="filtroCategoria" style="padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:#0f172a; color:#fff;">
@@ -163,6 +154,16 @@
             <option value="Audio">Audio</option>
             <option value="Electro">Electro</option>
           </select>
+          <!-- NUEVO: Ordenar por -->
+          <select id="ordenar" style="padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:#0f172a; color:#fff;">
+            <option value="relevancia">Ordenar: Relevancia</option>
+            <option value="precio-asc">Precio: menor a mayor</option>
+            <option value="precio-desc">Precio: mayor a menor</option>
+            <option value="nombre-asc">Nombre: A → Z</option>
+            <option value="nombre-desc">Nombre: Z → A</option>
+            <option value="nuevo">Más nuevos primero</option>
+          </select>
+
           <button id="btnLimpiar" type="button"
                   style="margin-left:8px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:#0f172a;color:#fff;cursor:pointer;">
             Limpiar filtros
@@ -261,6 +262,6 @@
   <div id="toast" role="status" aria-live="polite"></div>
 
   <!-- Catálogo (rompe caché) -->
-  <script src="assets/js/products.js?v=18" defer></script>
+  <script src="assets/js/products.js?v=19" defer></script>
 </body>
 </html>

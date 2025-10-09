@@ -13,7 +13,7 @@
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_PY">
 
-  <!-- Seguridad básica (permite data: para placeholders) -->
+  <!-- Seguridad básica -->
   <meta http-equiv="Content-Security-Policy"
         content="default-src 'self'; img-src 'self' data:; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
@@ -27,7 +27,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon.png">
   <link rel="shortcut icon" href="assets/favicon.png">
 
-  <!-- CSS -->
+  <!-- CSS base -->
   <link rel="preload" href="styles.css" as="style">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="assets/nav.css">
@@ -118,9 +118,12 @@
       100% { transform: translateX(0); }
     }
 
-    /* Respeto accesibilidad: si el usuario prefiere menos movimiento, pauso la animación */
+    /* Respetar "reducir movimiento" salvo que el banner tenga data-anim="force" */
     @media (prefers-reduced-motion: reduce){
-      .promo-banner .marquee__inner{ animation: none; padding-right: 0; }
+      .promo-banner:not([data-anim="force"]) .marquee__inner{
+        animation: none;
+        padding-right: 0;
+      }
     }
   </style>
 
@@ -129,8 +132,8 @@
 </head>
 <body>
 
-  <!-- Banner de novedades con marquee IZQ → DER (se oculta si el usuario lo cierra) -->
-  <div id="promoBanner" class="promo-banner" role="status" aria-live="polite" hidden>
+  <!-- Banner de novedades con marquee IZQ → DER (forzado a animar con data-anim="force") -->
+  <div id="promoBanner" class="promo-banner" role="status" aria-live="polite" data-anim="force" hidden>
     <div class="marquee" aria-hidden="true">
       <div class="marquee__inner">
         <span>🆕 Novedad: aceptamos <strong>efectivo</strong> y <strong>transferencia</strong>. ¡Consultá stock por WhatsApp!</span>

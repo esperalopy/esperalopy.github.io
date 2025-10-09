@@ -17,7 +17,7 @@
           background:#22c55e;color:#0b1220;text-decoration:none;font-weight:700}
   </style>
 
-  <!-- Inicialización manual -->
+  <!-- Forzamos inicialización manual del CMS -->
   <script>window.CMS_MANUAL_INIT = true;</script>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 </head>
@@ -27,15 +27,76 @@
     <p>Esperalopy — Cargando el CMS…</p>
     <div class="note">
       <p>Si ves esta pantalla por más de 10s, actualizá (Ctrl+F5 / Cmd+Shift+R).</p>
-      <p>La ruta del panel es <code>/admin</code>. Ejemplo: <code>https://TUUSUARIO.github.io/admin</code></p>
+      <p>Ruta del panel: <code>/admin</code> — Ej.: <code>https://TUUSUARIO.github.io/admin</code></p>
     </div>
     <a class="btn" href="/">Ir al sitio</a>
   </div>
 
   <script>
-    // Inicializamos el CMS leyendo /admin/config.yml
-    // (si hay error lo verás en la consola del navegador)
-    CMS.init({ config: { load_config_file: true } });
+    // CONFIG EMBEBIDA (no leemos /admin/config.yml, evitamos problemas de fetch/CORS)
+    const config = {
+      backend: {
+        name: "github",
+        repo: "esperalopy/esperalopy.github.io",
+        branch: "main",
+        base_url: "https://decap-oauth.netlify.app",
+        auth_endpoint: "/api/auth"
+      },
+      media_folder: "assets/img/productos",
+      public_folder: "/assets/img/productos",
+      locale: "es",
+      publish_mode: "editorial_workflow",
+
+      collections: [
+        {
+          label: "Productos",
+          name: "productos",
+          delete: true,
+          editor: { preview: false },
+          files: [
+            {
+              label: "Catálogo",
+              name: "catalogo",
+              file: "assets/products.json",
+              format: "json",
+              fields: [
+                {
+                  label: "Productos",
+                  name: "items",
+                  widget: "list",
+                  summary: "{{fields.nombre}} — Gs. {{fields.precio}}",
+                  fields: [
+                    { label: "ID", name: "id", widget: "string", hint: "único, ej: prod-001" },
+                    { label: "Nombre", name: "nombre", widget: "string" },
+                    { label: "Descripción", name: "descripcion", widget: "text", required: false },
+                    { label: "Precio (Gs.)", name: "precio", widget: "number", value_type: "int", min: 0 },
+                    { label: "Moneda", name: "moneda", widget: "string", default: "PYG" },
+                    { label: "Categoría", name: "categoria", widget: "select", options: ["Telefonía","Computación","Audio","Electro"] },
+                    { label: "Imagen", name: "imagen", widget: "image", media_folder: "", public_folder: "" },
+                    { label: "Estado (badge)", name: "estado", widget: "string", required: false, hint: "ej.: Usado • Bueno / Seminuevo / Agotado" },
+                    { label: "Disponible", name: "disponible", widget: "boolean", default: true }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    // Inicializamos Decap CMS con la config embebida
+    CMS.init({ config });
+
+    // Si querés ocultar el fallback cuando el CMS ya está montado:
+    const observer = new MutationObserver(() => {
+      const app = document.querySelector('[data-testid="app"]');
+      if (app) {
+        const fb = document.getElementById('fallback');
+        if (fb) fb.style.display = 'none';
+        observer.disconnect();
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
   </script>
 </body>
 </html>

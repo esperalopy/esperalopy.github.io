@@ -27,28 +27,30 @@
   <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon.png">
   <link rel="shortcut icon" href="assets/favicon.png">
 
-  <!-- CSS base -->
+  <!-- CSS del sitio -->
   <link rel="preload" href="styles.css" as="style">
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="assets/nav.css">
 
-  <!-- ========= ESTILOS ESPECÍFICOS DEL BANNER EN TARJETA (prefijo pb-) ========= -->
+  <!-- ========= ESTILOS del nuevo BANNER en TARJETA (prefijo pb-) ========= -->
   <style>
-    /* Si queda un ticker viejo en tu HTML, lo forzamos a ocultarse */
+    /* Si tenías tickers previos, los forzamos a ocultarse para no duplicar */
     #promoShell, #promoBanner, .ticker-shell, .ticker-card { display:none !important; }
 
     :root{
-      --pb-speed: 28s;                 /* Duración de desplazamiento (menor = más rápido) */
-      --pb-gap: 1.4rem;
+      --pb-speed: 28s;               /* Velocidad del desplazamiento */
+      --pb-gap: 1.2rem;              /* Separación entre chips */
 
-      --pb-border: rgba(255,255,255,.16);
+      /* Colores base */
       --pb-text: #e5e7eb;
+      --pb-card-bg: #0b1220;         /* Fondo interior de la tarjeta */
+      --pb-card-pattern: rgba(255,255,255,.04);
 
-      --pb-bg: linear-gradient(120deg,#0b1220 0%, #0e1629 55%, #0b1220 100%);
-      --pb-glow-1: radial-gradient(700px 220px at 12% -40%, rgba(56,189,248,.30), transparent 60%);
-      --pb-glow-2: radial-gradient(600px 220px at 85% 140%, rgba(124,58,237,.22), transparent 60%);
+      /* Degradado del borde neón */
+      --pb-neon: linear-gradient(90deg,#22d3ee 0%, #a78bfa 25%, #f472b6 50%, #22d3ee 100%);
 
-      --pb-chip-text: #0b1220;
+      /* Fondos de chips */
+      --pb-chip-text:#0b1220;
       --pb-chip-1: linear-gradient(135deg,#22c55e 0%, #16a34a 100%);
       --pb-chip-2: linear-gradient(135deg,#06b6d4 0%, #0ea5e9 100%);
       --pb-chip-3: linear-gradient(135deg,#f59e0b 0%, #f97316 100%);
@@ -56,49 +58,55 @@
       --pb-chip-5: linear-gradient(135deg,#ef4444 0%, #f43f5e 100%);
     }
 
-    /* Contenedor pegajoso (deja respirar al header) */
+    /* CONTENEDOR pegajoso para que se mantenga arriba pero con aire */
     .pb-shell{
       position: sticky; top: 0; z-index: 1400;
-      padding: 10px 14px 0 14px;
-      background: linear-gradient(180deg, rgba(11,18,32,.9), rgba(11,18,32,0));
+      padding: 10px 14px 0 14px;    /* aire con el header */
+      background: linear-gradient(180deg, rgba(11,18,32,.85), rgba(11,18,32,0));
       backdrop-filter: blur(2px);
     }
 
-    /* La TARJETA del banner */
+    /* TARJETA con borde NEÓN y PATRÓN interno (¡ahora sí se ve!) */
     .pb-card{
-      position: relative; overflow: hidden; color: var(--pb-text);
-      border-radius: 14px; border: 1px solid var(--pb-border);
-      background: var(--pb-bg);
-      box-shadow: 0 18px 40px rgba(0,0,0,.45);
-      isolation: isolate;
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 28px 60px rgba(0,0,0,.55);
+      margin-bottom: 12px;
+      /* Truco: capa para el borde neón */
     }
     .pb-card::before{
-      content:""; position:absolute; inset:-2px; z-index:0;
-      background: var(--pb-glow-1), var(--pb-glow-2);
-      pointer-events:none;
+      content: "";
+      position: absolute;
+      inset: 0;
+      padding: 2px;                       /* grosor del borde */
+      background: var(--pb-neon);
+      border-radius: inherit;
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+              mask-composite: exclude;   /* hace “hueco” para que se vea el interior */
+      pointer-events: none;
     }
-    .pb-card::after{
-      content:""; position:absolute; left:0; right:0; top:0; height:2px; z-index:1;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
-      opacity:.6; pointer-events:none;
-    }
-
-    .pb{
-      position: relative; z-index: 2;
+    .pb-inner{
+      position: relative;
+      border-radius: inherit;
+      background:
+        repeating-linear-gradient(
+          135deg,
+          transparent 0, transparent 8px,
+          var(--pb-card-pattern) 8px, var(--pb-card-pattern) 16px
+        ),
+        var(--pb-card-bg);
       padding: 10px 12px;
     }
-    .pb-wrap{
-      display:grid; grid-template-columns: 1fr auto; align-items:center; gap:8px;
-    }
-    .pb-close{
-      border: 1px solid var(--pb-border);
-      background: rgba(15,23,42,.6);
-      color:#cbd5e1; font-size:16px; cursor:pointer;
-      padding:6px 10px; border-radius:10px; line-height:1;
-      transition: .15s ease;
-    }
-    .pb-close:hover{ color:#fff; background: rgba(15,23,42,.8); transform: translateY(-1px); }
 
+    /* Layout del banner */
+    .pb-wrap{
+      display:grid; grid-template-columns: 1fr auto; align-items:center; gap:10px;
+      color: var(--pb-text);
+    }
     .pb-viewport{
       overflow:hidden; white-space:nowrap;
       mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
@@ -110,6 +118,7 @@
     }
     .pb-viewport:hover .pb-track{ animation-play-state: paused; }
 
+    /* Chips */
     .pb-chip{
       display:inline-flex; align-items:center; gap:.55rem;
       color: var(--pb-chip-text);
@@ -125,15 +134,25 @@
     .pb-4{ background: var(--pb-chip-4); }
     .pb-5{ background: var(--pb-chip-5); }
 
+    /* Botón cerrar */
+    .pb-close{
+      border: 1px solid rgba(255,255,255,.15);
+      background: rgba(15,23,42,.75);
+      color:#cbd5e1; font-size:16px; cursor:pointer;
+      padding:7px 11px; border-radius:10px; line-height:1;
+      transition: .15s ease;
+    }
+    .pb-close:hover{ color:#fff; background: rgba(15,23,42,.92); transform: translateY(-1px); }
+
     @keyframes pb-move{
       0%   { transform: translateX(-50%); }
       100% { transform: translateX(0); }
     }
     @media (prefers-reduced-motion: reduce){
-      .pb-card:not([data-anim="force"]) .pb-track{ animation:none; }
+      .pb-track{ animation:none; }
     }
 
-    /* Unos hover suaves que ya tenías para cards/botones */
+    /* Efecto hover suave en cards existentes (opcional) */
     .card{
       transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
       will-change: transform;
@@ -150,10 +169,10 @@
 </head>
 <body>
 
-  <!-- =============== BANNER NUEVO EN TARJETA (pb-card) =============== -->
+  <!-- =============== BANNER NUEVO EN TARJETA (neón + patrón) =============== -->
   <div class="pb-shell" id="pbShell">
-    <div class="pb-card" id="pbCard" data-anim="force">
-      <div class="pb">
+    <div class="pb-card" id="pbCard">
+      <div class="pb-inner">
         <div class="pb-wrap">
           <div class="pb-viewport" aria-hidden="true">
             <div class="pb-track">
@@ -163,7 +182,7 @@
               <span class="pb-chip pb-3">💬 Reservá por WhatsApp</span>
               <span class="pb-chip pb-4">🔧 Soporte y asesoría</span>
               <span class="pb-chip pb-5">💳 Efectivo y transferencia</span>
-              <!-- Copia 2 (duplicamos para bucle continuo) -->
+              <!-- Copia 2 para bucle continuo -->
               <span class="pb-chip pb-1">🎉 ¡Promo de lanzamiento!</span>
               <span class="pb-chip pb-2">🚚 Envíos a Asunción / Gran Asunción</span>
               <span class="pb-chip pb-3">💬 Reservá por WhatsApp</span>
@@ -189,7 +208,7 @@
       }catch(e){}
     })();
   </script>
-  <!-- ================================================================ -->
+  <!-- ============================================================== -->
 
   <!-- HEADER -->
   <header class="container">
@@ -259,8 +278,7 @@
       </p>
 
       <header style="display:flex; align-items:end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:20px;">
-        <p style="opacity:.8; margin:.25rem 0 0;">
-          Fotos, precios en guaraníes y botón directo a WhatsApp.
+        <p style="opacity:.8; margin:.25rem 0 0;">Fotos, precios en guaraníes y botón directo a WhatsApp.
           <span id="contadorProductos" style="margin-left:8px; font-weight:600; opacity:.9;"></span>
         </p>
         <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
@@ -375,7 +393,7 @@
   <!-- Botón Volver arriba (visible) -->
   <a href="#inicio" class="to-top show" aria-label="Volver arriba">↑</a>
 
-  <!-- Catálogo (rompe caché para asegurar cambios) -->
-  <script src="assets/js/products.js?v=23" defer></script>
+  <!-- Catálogo (rompe caché) -->
+  <script src="assets/js/products.js?v=24" defer></script>
 </body>
 </html>

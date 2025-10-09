@@ -16,12 +16,13 @@
     a.btn{display:inline-block;margin-top:14px;padding:10px 14px;border-radius:10px;
           background:#22c55e;color:#0b1220;text-decoration:none;font-weight:700}
   </style>
-  <!-- Carga Decap CMS desde CDN oficial -->
+
+  <!-- Inicialización manual -->
+  <script>window.CMS_MANUAL_INIT = true;</script>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 </head>
 <body>
-  <!-- Mensaje de cortesía por si tarda la carga -->
-  <div class="wrap">
+  <div class="wrap" id="fallback">
     <h1>Panel de administración</h1>
     <p>Esperalopy — Cargando el CMS…</p>
     <div class="note">
@@ -31,10 +32,10 @@
     <a class="btn" href="/">Ir al sitio</a>
   </div>
 
-  <!-- Inicialización mínima: el resto lo hace config.yml (siguiente paso) -->
   <script>
-    // No hace falta registrar colecciones acá; se leen desde /admin/config.yml
+    // Inicializamos el CMS leyendo /admin/config.yml
+    // (si hay error lo verás en la consola del navegador)
+    CMS.init({ config: { load_config_file: true } });
   </script>
 </body>
 </html>
-

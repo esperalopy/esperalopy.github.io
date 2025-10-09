@@ -17,7 +17,7 @@
           background:#22c55e;color:#0b1220;text-decoration:none;font-weight:700}
   </style>
 
-  <!-- Forzamos inicialización manual del CMS -->
+  <!-- Inicialización manual -->
   <script>window.CMS_MANUAL_INIT = true;</script>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 </head>
@@ -33,7 +33,7 @@
   </div>
 
   <script>
-    // CONFIG EMBEBIDA (no leemos /admin/config.yml, evitamos problemas de fetch/CORS)
+    // Config embebida (única fuente de verdad)
     const config = {
       backend: {
         name: "github",
@@ -84,10 +84,10 @@
       ]
     };
 
-    // Inicializamos Decap CMS con la config embebida
-    CMS.init({ config });
+    // Importante: desactivar carga del config.yml para evitar duplicado
+    CMS.init({ config, load_config_file: false });
 
-    // Si querés ocultar el fallback cuando el CMS ya está montado:
+    // Ocultar fallback cuando el CMS monte su app
     const observer = new MutationObserver(() => {
       const app = document.querySelector('[data-testid="app"]');
       if (app) {

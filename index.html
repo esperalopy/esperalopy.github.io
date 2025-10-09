@@ -32,7 +32,7 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="assets/nav.css">
 
-  <!-- Micro-animaciones + Toast + Lazy blur -->
+  <!-- Micro-animaciones + Toast + Lazy blur + Banner -->
   <style>
     .card{
       transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
@@ -84,12 +84,31 @@
       z-index: 1000;
     }
     #toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
+
+    /* Banner de novedades (dismissible) */
+    .promo-banner{
+      display:flex; align-items:center; gap:12px; justify-content:center;
+      padding:10px 14px; background:#0f172a; color:#fff;
+      border-bottom:1px solid rgba(255,255,255,.12);
+    }
+    .promo-banner .x{
+      border:none; background:transparent; color:#cbd5e1; font-size:18px; cursor:pointer;
+      padding:4px 8px; line-height:1;
+    }
+    .promo-banner .x:hover{ color:#fff; }
   </style>
 
   <!-- JS del sitio -->
-  <script src="assets/main.js" defer></script>
+  <script src="assets/main.js?v=3" defer></script>
 </head>
 <body>
+
+  <!-- Banner de novedades (se oculta si el usuario lo cierra) -->
+  <div id="promoBanner" class="promo-banner" role="status" aria-live="polite" hidden>
+    <span>🆕 Novedad: aceptamos <strong>efectivo</strong> y <strong>transferencia</strong>. ¡Consultá stock por WhatsApp!</span>
+    <button class="x" aria-label="Cerrar aviso" title="Cerrar">×</button>
+  </div>
+
   <!-- HEADER -->
   <header class="container">
     <nav class="nav" aria-label="Principal">
@@ -158,7 +177,10 @@
       </p>
 
       <header style="display:flex; align-items:end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:20px;">
-        <p style="opacity:.8; margin:.25rem 0 0;">Fotos, precios en guaraníes y botón directo a WhatsApp.</p>
+        <p style="opacity:.8; margin:.25rem 0 0;">
+          Fotos, precios en guaraníes y botón directo a WhatsApp.
+          <span id="contadorProductos" style="margin-left:8px; font-weight:600; opacity:.9;"></span>
+        </p>
         <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
           <input id="buscar" type="search" placeholder="Buscar…" aria-label="Buscar productos"
                  style="padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:#0f172a; color:#fff; min-width:220px;">
@@ -280,6 +302,6 @@
   <div id="toast" role="status" aria-live="polite"></div>
 
   <!-- Catálogo (rompe caché) -->
-  <script src="assets/js/products.js?v=20" defer></script>
+  <script src="assets/js/products.js?v=21" defer></script>
 </body>
 </html>

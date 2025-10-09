@@ -1,5 +1,5 @@
 // assets/js/products.js
-// Catálogo con búsqueda/filtro, WhatsApp y RESERVAR (localStorage) + TOAST.
+// Catálogo con búsqueda/filtro, Ordenar, WhatsApp y RESERVAR (localStorage) + TOAST.
 
 (async function () {
   const TEL = '595994252213';                // tu número sin + ni 0
@@ -10,6 +10,7 @@
   const $tpl     = document.getElementById('tplProducto');
   const $buscar  = document.getElementById('buscar');
   const $filtro  = document.getElementById('filtroCategoria');
+  const $ordenar = document.getElementById('ordenar');
   const $limpiar = document.getElementById('btnLimpiar');
   const $toast   = document.getElementById('toast');
 
@@ -232,25 +233,53 @@
     }
   }
 
-  // Filtros
+  // Ordenamiento
+  function ordenarLista(lista, criterio) {
+    const arr = [...lista];
+    switch (criterio) {
+      case 'precio-asc':
+        arr.sort((a,b) => (a.precio??0) - (b.precio??0)); break;
+      case 'precio-desc':
+        arr.sort((a,b) => (b.precio??0) - (a.precio??0)); break;
+      case 'nombre-asc':
+        arr.sort((a,b) => (a.nombre||'').localeCompare(b.nombre||'')); break;
+      case 'nombre-desc':
+        arr.sort((a,b) => (b.nombre||'').localeCompare(a.nombre||'')); break;
+      case 'nuevo':
+        // si hay fecha YYYY-MM-DD, más nuevos primero
+        arr.sort((a,b) => new Date(b.fecha||0) - new Date(a.fecha||0)); break;
+      default:
+        // relevancia: mantenemos el orden del JSON
+        break;
+    }
+    return arr;
+  }
+
+  // Filtros + Orden
   function aplicarFiltros() {
     const q = ($buscar?.value || '').toLowerCase().trim();
     const cat = $filtro?.value || '';
-    const filtrados = productos.filter(p => {
+    const ord = $ordenar?.value || 'relevancia';
+
+    let filtrados = productos.filter(p => {
       const texto = `${p.nombre || ''} ${p.descripcion || ''}`.toLowerCase();
       const okTexto = !q || texto.includes(q);
       const okCat = !cat || (p.categoria === cat);
       return okTexto && okCat;
     });
+
+    filtrados = ordenarLista(filtrados, ord);
     render(filtrados);
   }
 
   // Eventos
   $buscar?.addEventListener('input', aplicarFiltros);
   $filtro?.addEventListener('change', aplicarFiltros);
+  $ordenar?.addEventListener('change', aplicarFiltros);
   $limpiar?.addEventListener('click', () => {
     if ($buscar) $buscar.value = '';
     if ($filtro) $filtro.value = '';
+    if ($ordenar) $ordenar.value = 'relevancia';
     render(productos);
   });
 

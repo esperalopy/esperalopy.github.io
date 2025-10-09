@@ -1,5 +1,6 @@
 // assets/js/products.js
-// Catálogo con búsqueda/filtro, Ordenar, WhatsApp y RESERVAR (localStorage) + TOAST.
+// Catálogo con búsqueda/filtro, ORDENAR, WhatsApp, RESERVAR (localStorage) + TOAST
+// + Lazy-load con blur usando IntersectionObserver.
 
 (async function () {
   const TEL = '595994252213';                // tu número sin + ni 0
@@ -29,22 +30,25 @@
     style: 'currency', currency: 'PYG', maximumFractionDigits: 0
   });
 
-  // Placeholder SVG si falta imagen
+  // Placeholder visible en <img src> hasta que cargue la real (data-src)
+  const IMG_PLACEHOLDER =
+    'data:image/svg+xml;utf8,' +
+    encodeURIComponent(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60">
+        <defs><linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#0d1b2a"/><stop offset="1" stop-color="#132238"/></linearGradient></defs>
+        <rect width="60" height="60" fill="url(#g)"/>
+      </svg>`
+    );
+
+  // Fallback si el producto no tiene imagen
   const IMG_FALLBACK =
     'data:image/svg+xml;utf8,' +
     encodeURIComponent(
       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600">
-         <defs>
-           <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
-             <stop offset="0" stop-color="#0d1b2a"/>
-             <stop offset="1" stop-color="#132238"/>
-           </linearGradient>
-         </defs>
+         <defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+           <stop offset="0" stop-color="#0d1b2a"/><stop offset="1" stop-color="#132238"/></linearGradient></defs>
          <rect width="600" height="600" fill="url(#g)"/>
-         <text x="50%" y="50%" dy=".35em" text-anchor="middle"
-               fill="#94a3b8" font-family="sans-serif" font-size="22">
-           Sin imagen
-         </text>
+         <text x="50%" y="50%" dy=".35em" text-anchor="middle" fill="#94a3b8" font-family="sans-serif" font-size="22">Sin imagen</text>
        </svg>`
     );
 
@@ -67,9 +71,7 @@
     if (!Array.isArray(productos)) throw new Error('El JSON debe ser un array de productos');
   } catch (err) {
     console.error(err);
-    if ($grid) {
-      $grid.innerHTML = `<p style="opacity:.85">No pudimos cargar el catálogo. Verificá <code>assets/products.json</code>.</p>`;
-    }
+    if ($grid) $grid.innerHTML = `<p style="opacity:.85">No pudimos cargar el catálogo. Verificá <code>assets/products.json</code>.</p>`;
     return;
   }
 
@@ -81,7 +83,7 @@
     t.innerHTML = `
       <article class="card" style="background:#0b1220; border:1px solid rgba(255,255,255,.1); border-radius:16px; overflow:hidden; display:flex; flex-direction:column;">
         <div style="position:relative; aspect-ratio:1/1; background:#0d1b2a;">
-          <img alt="" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block;">
+          <img alt="" loading="lazy" class="lazy-img" style="width:100%; height:100%; object-fit:cover; display:block;">
           <span class="badge" style="position:absolute; top:10px; left:10px; background:#1d4ed8; color:#fff; padding:4px 8px; border-radius:999px; font-size:12px;"></span>
         </div>
         <div style="padding:14px; display:flex; flex-direction:column; gap:8px;">
@@ -89,20 +91,32 @@
           <p class="desc" style="opacity:.8; font-size:14px; margin:0; min-height:38px;"></p>
           <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:12px; flex-wrap:wrap;">
             <strong class="precio" style="font-size:18px;"></strong>
-            <a class="btnWp" target="_blank" rel="noopener"
-               style="text-decoration:none; padding:10px 12px; border-radius:10px; background:#22c55e; color:#0b1220; font-weight:600; display:inline-block; line-height:1;">
-              WhatsApp
-            </a>
-            <button class="btnReservar"
-                    style="padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:#1d4ed8; color:#fff; font-weight:600; cursor:pointer; display:inline-block; line-height:1;">
-              Reservar
-            </button>
+            <a class="btnWp" target="_blank" rel="noopener" style="text-decoration:none; padding:10px 12px; border-radius:10px; background:#22c55e; color:#0b1220; font-weight:600; display:inline-block; line-height:1;">WhatsApp</a>
+            <button class="btnReservar" style="padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:#1d4ed8; color:#fff; font-weight:600; cursor:pointer; display:inline-block; line-height:1;">Reservar</button>
           </div>
         </div>
-      </article>
-    `;
+      </article>`;
     document.body.appendChild(t);
     return t;
+  }
+
+  // INTERSECTION OBSERVER para imágenes
+  const io = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const img = entry.target;
+      const real = img.getAttribute('data-src');
+      if (real) {
+        img.onload = () => img.classList.add('lazy-loaded');
+        img.onerror = () => { img.src = IMG_FALLBACK; img.classList.add('lazy-loaded'); };
+        img.src = real;
+      }
+      obs.unobserve(img);
+    });
+  }, { rootMargin: '200px 0px', threshold: 0.01 });
+
+  function lazyWatch(img) {
+    try { io.observe(img); } catch { /* noop */ }
   }
 
   // Render de tarjetas
@@ -127,9 +141,12 @@
       const $cta = node.querySelector('.btnWp');
       const $reservar = node.querySelector('.btnReservar');
 
-      // Imagen
-      img.src = p.imagen || IMG_FALLBACK;
+      // LAZY: ponemos placeholder en src y la real en data-src
+      const realSrc = p.imagen || IMG_FALLBACK;
+      img.src = IMG_PLACEHOLDER;
+      img.setAttribute('data-src', realSrc);
       img.alt = p.nombre || 'Producto';
+      img.classList.remove('lazy-loaded'); // por si re-render
 
       // Estado calculado
       const isReservadoGlobal = p.reservado === true || (typeof p.estado === 'string' && p.estado.trim().toLowerCase() === 'reservado');
@@ -140,16 +157,13 @@
       // Badge
       if (isReservado) {
         $badge.textContent = 'Reservado';
-        $badge.style.background = '#ef4444';
-        $badge.style.color = '#fff';
+        $badge.style.background = '#ef4444'; $badge.style.color = '#fff';
       } else if (p.estado && !isAgotado) {
         $badge.textContent = p.estado;
-        $badge.style.background = '#1d4ed8';
-        $badge.style.color = '#fff';
+        $badge.style.background = '#1d4ed8'; $badge.style.color = '#fff';
       } else if (isAgotado) {
         $badge.textContent = 'Agotado';
-        $badge.style.background = '#f59e0b';
-        $badge.style.color = '#0b1220';
+        $badge.style.background = '#f59e0b'; $badge.style.color = '#0b1220';
       } else {
         $badge.style.display = 'none';
       }
@@ -172,16 +186,14 @@
         article.style.opacity = '0.92';
         $cta.textContent = 'Agotado / Avísame';
         $cta.href = `https://wa.me/${TEL}?text=${textoNoDisponible}`;
-        $cta.style.background = '#f59e0b';
-        $cta.style.color = '#0b1220';
+        $cta.style.background = '#f59e0b'; $cta.style.color = '#0b1220';
         $cta.title = 'Producto agotado: tocá para avisarte cuando llegue';
         $reservar.style.display = 'none';
       } else if (isReservado) {
         article.style.opacity = '0.9';
         $cta.textContent = 'Reservado / Consultar';
         $cta.href = `https://wa.me/${TEL}?text=${textoReservado}`;
-        $cta.style.background = '#ef4444';
-        $cta.style.color = '#fff';
+        $cta.style.background = '#ef4444'; $cta.style.color = '#fff';
         $cta.title = 'Producto reservado: consultá por disponibilidad';
 
         if (isReservadoLocal && !isReservadoGlobal) {
@@ -190,11 +202,8 @@
           $reservar.style.background = '#0f172a';
           $reservar.style.border = '1px solid rgba(255,255,255,.25)';
           $reservar.onclick = () => {
-            const map = leerReservas();
-            delete map[p.id];
-            escribirReservas(map);
-            showToast('Reserva quitada');
-            render(lista);
+            const map = leerReservas(); delete map[p.id]; escribirReservas(map);
+            showToast('Reserva quitada'); render(lista);
           };
         } else {
           $reservar.style.display = 'none';
@@ -204,26 +213,26 @@
         article.style.opacity = '1';
         $cta.textContent = 'WhatsApp';
         $cta.href = `https://wa.me/${TEL}?text=${textoDisponible}`;
-        $cta.style.background = '#22c55e';
-        $cta.style.color = '#0b1220';
+        $cta.style.background = '#22c55e'; $cta.style.color = '#0b1220';
         $cta.title = 'Consultar por WhatsApp';
 
         // Botón Reservar activo
         $reservar.textContent = 'Reservar';
         $reservar.style.display = 'inline-block';
-        $reservar.style.background = '#1d4ed8';
-        $reservar.style.color = '#fff';
+        $reservar.style.background = '#1d4ed8'; $reservar.style.color = '#fff';
         $reservar.onclick = () => {
-          const map = leerReservas();
-          map[p.id] = true;
-          escribirReservas(map);
+          const map = leerReservas(); map[p.id] = true; escribirReservas(map);
           showToast('Producto reservado');
           window.open(`https://wa.me/${TEL}?text=${textoQuieroReservar}`, '_blank');
           render(lista);
         };
       }
 
+      // Agregar al fragmento
       frag.appendChild(node);
+
+      // Registrar imagen para lazy-load
+      lazyWatch(img);
     });
 
     $grid.appendChild(frag);
@@ -237,20 +246,12 @@
   function ordenarLista(lista, criterio) {
     const arr = [...lista];
     switch (criterio) {
-      case 'precio-asc':
-        arr.sort((a,b) => (a.precio??0) - (b.precio??0)); break;
-      case 'precio-desc':
-        arr.sort((a,b) => (b.precio??0) - (a.precio??0)); break;
-      case 'nombre-asc':
-        arr.sort((a,b) => (a.nombre||'').localeCompare(b.nombre||'')); break;
-      case 'nombre-desc':
-        arr.sort((a,b) => (b.nombre||'').localeCompare(a.nombre||'')); break;
-      case 'nuevo':
-        // si hay fecha YYYY-MM-DD, más nuevos primero
-        arr.sort((a,b) => new Date(b.fecha||0) - new Date(a.fecha||0)); break;
-      default:
-        // relevancia: mantenemos el orden del JSON
-        break;
+      case 'precio-asc':  arr.sort((a,b) => (a.precio??0) - (b.precio??0)); break;
+      case 'precio-desc': arr.sort((a,b) => (b.precio??0) - (a.precio??0)); break;
+      case 'nombre-asc':  arr.sort((a,b) => (a.nombre||'').localeCompare(b.nombre||'')); break;
+      case 'nombre-desc': arr.sort((a,b) => (b.nombre||'').localeCompare(a.nombre||'')); break;
+      case 'nuevo':       arr.sort((a,b) => new Date(b.fecha||0) - new Date(a.fecha||0)); break;
+      default: break; // relevancia (orden del JSON)
     }
     return arr;
   }

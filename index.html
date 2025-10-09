@@ -32,197 +32,10 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="assets/nav.css">
 
-  <!-- ========= ESTILOS del BANNER en TARJETA con TEMAS ========= -->
-  <style>
-    /* Oculta tickers viejos si quedaran */
-    #promoShell, #promoBanner, .ticker-shell, .ticker-card { display:none !important; }
-
-    :root{
-      --pb-speed: 28s;
-      --pb-gap: 1.2rem;
-
-      --pb-text: #e5e7eb;
-      --pb-card-bg: #0b1220;         /* se sobreescribe por tema */
-      --pb-card-pattern: rgba(255,255,255,.04);
-
-      --pb-neon: linear-gradient(90deg,#22d3ee 0%, #a78bfa 25%, #f472b6 50%, #22d3ee 100%); /* se puede sobreescribir */
-
-      --pb-chip-text:#0b1220;
-      --pb-chip-1: linear-gradient(135deg,#22c55e 0%, #16a34a 100%);
-      --pb-chip-2: linear-gradient(135deg,#06b6d4 0%, #0ea5e9 100%);
-      --pb-chip-3: linear-gradient(135deg,#f59e0b 0%, #f97316 100%);
-      --pb-chip-4: linear-gradient(135deg,#a78bfa 0%, #6366f1 100%);
-      --pb-chip-5: linear-gradient(135deg,#ef4444 0%, #f43f5e 100%);
-    }
-
-    /* ===================== TEMAS ===================== */
-    /* TURQUESA oscuro (default visual y elegante) */
-    .pb-theme-turq{
-      --pb-card-bg: #0b2a2f; /* turquesa muy oscuro */
-      --pb-card-pattern: rgba(255,255,255,.045);
-      --pb-neon: linear-gradient(90deg,#22d3ee 0%, #14b8a6 40%, #0ea5e9 70%, #22d3ee 100%);
-      --pb-chip-1: linear-gradient(135deg,#22c55e 0%, #16a34a 100%);
-      --pb-chip-2: linear-gradient(135deg,#06b6d4 0%, #0ea5e9 100%);
-      --pb-chip-3: linear-gradient(135deg,#f59e0b 0%, #f97316 100%);
-      --pb-chip-4: linear-gradient(135deg,#67e8f9 0%, #38bdf8 100%);
-      --pb-chip-5: linear-gradient(135deg,#ef4444 0%, #f43f5e 100%);
-    }
-    /* ÁMBAR / AMARILLO (muy llamativo) */
-    .pb-theme-amber{
-      --pb-card-bg: #3a2a07; /* marrón oscuro cálido */
-      --pb-card-pattern: rgba(255,255,255,.06);
-      --pb-neon: linear-gradient(90deg,#fbbf24 0%, #f59e0b 35%, #f97316 70%, #fbbf24 100%);
-      --pb-chip-1: linear-gradient(135deg,#fde047 0%, #facc15 100%); /* chips más cálidos */
-      --pb-chip-2: linear-gradient(135deg,#f59e0b 0%, #f97316 100%);
-      --pb-chip-3: linear-gradient(135deg,#fda4af 0%, #fb7185 100%);
-      --pb-chip-4: linear-gradient(135deg,#fcd34d 0%, #f59e0b 100%);
-      --pb-chip-5: linear-gradient(135deg,#ef4444 0%, #f43f5e 100%);
-    }
-    /* ================================================= */
-
-    .pb-shell{
-      position: sticky; top: 0; z-index: 1400;
-      padding: 10px 14px 0 14px;
-      background: linear-gradient(180deg, rgba(11,18,32,.85), rgba(11,18,32,0));
-      backdrop-filter: blur(2px);
-    }
-    .pb-card{
-      position: relative;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 28px 60px rgba(0,0,0,.55);
-      margin-bottom: 12px;
-    }
-    .pb-card::before{
-      content: "";
-      position: absolute; inset: 0;
-      padding: 2px;                       /* grosor del borde */
-      background: var(--pb-neon);
-      border-radius: inherit;
-      -webkit-mask:
-        linear-gradient(#000 0 0) content-box,
-        linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor;
-              mask-composite: exclude;
-      pointer-events: none;
-    }
-    .pb-inner{
-      border-radius: inherit;
-      background:
-        repeating-linear-gradient(
-          135deg,
-          transparent 0, transparent 8px,
-          var(--pb-card-pattern) 8px, var(--pb-card-pattern) 16px
-        ),
-        var(--pb-card-bg);
-      padding: 10px 12px;
-    }
-    .pb-wrap{
-      display:grid; grid-template-columns: 1fr auto; align-items:center; gap:10px;
-      color: var(--pb-text);
-    }
-    .pb-viewport{
-      overflow:hidden; white-space:nowrap;
-      mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
-    }
-    .pb-track{
-      display:inline-flex; gap:var(--pb-gap); align-items:center;
-      animation: pb-move var(--pb-speed) linear infinite;
-      will-change: transform;
-    }
-    .pb-viewport:hover .pb-track{ animation-play-state: paused; }
-
-    .pb-chip{
-      display:inline-flex; align-items:center; gap:.55rem;
-      color: var(--pb-chip-text);
-      border-radius: 999px;
-      padding:.55rem .95rem;
-      font-weight:700; white-space:nowrap;
-      box-shadow: 0 10px 24px rgba(0,0,0,.28);
-      border:1px solid rgba(255,255,255,.15);
-    }
-    .pb-1{ background: var(--pb-chip-1); }
-    .pb-2{ background: var(--pb-chip-2); }
-    .pb-3{ background: var(--pb-chip-3); }
-    .pb-4{ background: var(--pb-chip-4); }
-    .pb-5{ background: var(--pb-chip-5); }
-
-    .pb-close{
-      border: 1px solid rgba(255,255,255,.15);
-      background: rgba(15,23,42,.75);
-      color:#cbd5e1; font-size:16px; cursor:pointer;
-      padding:7px 11px; border-radius:10px; line-height:1;
-      transition: .15s ease;
-    }
-    .pb-close:hover{ color:#fff; background: rgba(15,23,42,.92); transform: translateY(-1px); }
-
-    @keyframes pb-move{
-      0%   { transform: translateX(-50%); }
-      100% { transform: translateX(0); }
-    }
-    @media (prefers-reduced-motion: reduce){
-      .pb-track{ animation:none; }
-    }
-
-    /* Hover suave para tus cards existentes */
-    .card{
-      transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-      will-change: transform;
-    }
-    .card:hover{
-      transform: translateY(-6px);
-      box-shadow: 0 14px 28px rgba(0,0,0,.3);
-      border-color: rgba(255,255,255,.2) !important;
-    }
-  </style>
-
-  <!-- JS del sitio -->
+  <!-- JS base del sitio -->
   <script src="assets/main.js" defer></script>
 </head>
-
-<!-- CAMBIÁ LA CLASE DEL BODY PARA ELEGIR TEMA -->
-<body class="pb-theme-turq">  <!-- usar pb-theme-amber para amarillo -->
-
-  <!-- ====== BANNER EN TARJETA ====== -->
-  <div class="pb-shell" id="pbShell">
-    <div class="pb-card" id="pbCard">
-      <div class="pb-inner">
-        <div class="pb-wrap">
-          <div class="pb-viewport" aria-hidden="true">
-            <div class="pb-track">
-              <!-- Copia 1 -->
-              <span class="pb-chip pb-1">🎉 ¡Promo de lanzamiento!</span>
-              <span class="pb-chip pb-2">🚚 Envíos a Asunción / Gran Asunción</span>
-              <span class="pb-chip pb-3">💬 Reservá por WhatsApp</span>
-              <span class="pb-chip pb-4">🔧 Soporte y asesoría</span>
-              <span class="pb-chip pb-5">💳 Efectivo y transferencia</span>
-              <!-- Copia 2 para bucle continuo -->
-              <span class="pb-chip pb-1">🎉 ¡Promo de lanzamiento!</span>
-              <span class="pb-chip pb-2">🚚 Envíos a Asunción / Gran Asunción</span>
-              <span class="pb-chip pb-3">💬 Reservá por WhatsApp</span>
-              <span class="pb-chip pb-4">🔧 Soporte y asesoría</span>
-              <span class="pb-chip pb-5">💳 Efectivo y transferencia</span>
-            </div>
-          </div>
-          <button class="pb-close" aria-label="Cerrar aviso" title="Cerrar" onclick="
-            try{ localStorage.setItem('pbClosed','1'); }catch(e){}
-            document.getElementById('pbShell').style.display='none';
-          ">×</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <script>
-    (function(){
-      try{
-        if(localStorage.getItem('pbClosed')==='1'){
-          document.getElementById('pbShell').style.display='none';
-        }
-      }catch(e){}
-    })();
-  </script>
-  <!-- ================================ -->
-
+<body>
   <!-- HEADER -->
   <header class="container">
     <nav class="nav" aria-label="Principal">
@@ -230,7 +43,9 @@
         <img src="assets/logo.png" alt="Logo Esperalopy">
         <span>Esperalopy</span>
       </a>
+
       <button class="hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="main-menu">☰</button>
+
       <div class="menu" id="main-menu">
         <a href="#inicio">Inicio</a>
         <a href="#servicios">Servicios</a>
@@ -324,6 +139,7 @@
         <p style="opacity:.85;margin:.5rem 0">Cargando catálogo…</p>
       </div>
 
+      <!-- Molde de tarjeta para JS -->
       <template id="tplProducto">
         <article class="card" style="background:#0b1220; border:1px solid rgba(255,255,255,.1); border-radius:16px; overflow:hidden; display:flex; flex-direction:column;">
           <div style="position:relative; aspect-ratio:1/1; background:#0d1b2a;">
@@ -403,10 +219,10 @@
   <a href="https://wa.me/595994252213?text=Hola%20Esperalopy!%20Vengo%20de%20tu%20web%20y%20quiero%20hacer%20una%20consulta."
      class="wp-float" aria-label="Escribir por WhatsApp">💬</a>
 
-  <!-- Botón Volver arriba (visible) -->
-  <a href="#inicio" class="to-top show" aria-label="Volver arriba">↑</a>
+  <!-- Botón Volver arriba (si tu styles.css lo maneja con .to-top) -->
+  <a href="#inicio" class="to-top" aria-label="Volver arriba">↑</a>
 
-  <!-- Catálogo (rompe caché) -->
+  <!-- Catálogo (rompe caché para forzar actualización) -->
   <script src="assets/js/products.js?v=25" defer></script>
 </body>
 </html>

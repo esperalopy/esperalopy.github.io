@@ -1,6 +1,6 @@
 // assets/js/products.js
 // Catálogo con búsqueda/filtro, ORDENAR, WhatsApp, RESERVAR (localStorage) + TOAST
-// + Lazy-load con blur usando IntersectionObserver.
+// + Lazy-load con blur + contador de resultados.
 
 (async function () {
   const TEL = '595994252213';                // tu número sin + ni 0
@@ -14,6 +14,7 @@
   const $ordenar = document.getElementById('ordenar');
   const $limpiar = document.getElementById('btnLimpiar');
   const $toast   = document.getElementById('toast');
+  const $count   = document.getElementById('contadorProductos');
 
   // Toast helper
   let toastTimer = null;
@@ -30,7 +31,7 @@
     style: 'currency', currency: 'PYG', maximumFractionDigits: 0
   });
 
-  // Placeholder visible en <img src> hasta que cargue la real (data-src)
+  // Placeholders para lazy-load
   const IMG_PLACEHOLDER =
     'data:image/svg+xml;utf8,' +
     encodeURIComponent(
@@ -39,8 +40,6 @@
         <rect width="60" height="60" fill="url(#g)"/>
       </svg>`
     );
-
-  // Fallback si el producto no tiene imagen
   const IMG_FALLBACK =
     'data:image/svg+xml;utf8,' +
     encodeURIComponent(
@@ -72,6 +71,7 @@
   } catch (err) {
     console.error(err);
     if ($grid) $grid.innerHTML = `<p style="opacity:.85">No pudimos cargar el catálogo. Verificá <code>assets/products.json</code>.</p>`;
+    if ($count) $count.textContent = '';
     return;
   }
 
@@ -100,7 +100,7 @@
     return t;
   }
 
-  // INTERSECTION OBSERVER para imágenes
+  // INTERSECTION OBSERVER para imágenes (lazy)
   const io = new IntersectionObserver((entries, obs) => {
     entries.forEach(entry => {
       if (!entry.isIntersecting) return;
@@ -141,12 +141,12 @@
       const $cta = node.querySelector('.btnWp');
       const $reservar = node.querySelector('.btnReservar');
 
-      // LAZY: ponemos placeholder en src y la real en data-src
+      // LAZY: placeholder en src y real en data-src
       const realSrc = p.imagen || IMG_FALLBACK;
       img.src = IMG_PLACEHOLDER;
       img.setAttribute('data-src', realSrc);
       img.alt = p.nombre || 'Producto';
-      img.classList.remove('lazy-loaded'); // por si re-render
+      img.classList.remove('lazy-loaded');
 
       // Estado calculado
       const isReservadoGlobal = p.reservado === true || (typeof p.estado === 'string' && p.estado.trim().toLowerCase() === 'reservado');
@@ -236,6 +236,12 @@
     });
 
     $grid.appendChild(frag);
+
+    // Contador
+    if ($count) {
+      const n = lista.length || 0;
+      $count.textContent = n === 1 ? '· 1 producto' : `· ${n} productos`;
+    }
 
     if (!lista.length) {
       $grid.innerHTML = `<p style="opacity:.85;margin:.5rem 0">No se encontraron productos con ese filtro.</p>`;

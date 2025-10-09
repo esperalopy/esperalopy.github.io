@@ -1,7 +1,5 @@
 // assets/js/products.js
-// Catálogo con búsqueda/filtro, WhatsApp y RESERVAR (localStorage).
-// Ajuste de layout: margen superior en la fila de botones y flex-wrap
-// para que no se corten en el borde inferior del card.
+// Catálogo con búsqueda/filtro, WhatsApp y RESERVAR (localStorage) + TOAST.
 
 (async function () {
   const TEL = '595994252213';                // tu número sin + ni 0
@@ -13,6 +11,17 @@
   const $buscar  = document.getElementById('buscar');
   const $filtro  = document.getElementById('filtroCategoria');
   const $limpiar = document.getElementById('btnLimpiar');
+  const $toast   = document.getElementById('toast');
+
+  // Toast helper
+  let toastTimer = null;
+  function showToast(msg) {
+    if (!$toast) return;
+    $toast.textContent = msg;
+    $toast.classList.add('show');
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => $toast.classList.remove('show'), 2400);
+  }
 
   // Formateador a guaraníes
   const fmtPYG = new Intl.NumberFormat('es-PY', {
@@ -130,7 +139,7 @@
       // Badge
       if (isReservado) {
         $badge.textContent = 'Reservado';
-        $badge.style.background = '#ef4444'; // rojo
+        $badge.style.background = '#ef4444';
         $badge.style.color = '#fff';
       } else if (p.estado && !isAgotado) {
         $badge.textContent = p.estado;
@@ -138,7 +147,7 @@
         $badge.style.color = '#fff';
       } else if (isAgotado) {
         $badge.textContent = 'Agotado';
-        $badge.style.background = '#f59e0b'; // ámbar
+        $badge.style.background = '#f59e0b';
         $badge.style.color = '#0b1220';
       } else {
         $badge.style.display = 'none';
@@ -152,9 +161,9 @@
 
       // Mensajes Whatsapp
       const base = `Hola Esperalopy! Me interesa este producto:\n${p.nombre || ''} – ${fmtPYG.format(precioNum)} (ID: ${p.id || 's/id'}).\n`;
-      const textoDisponible   = encodeURIComponent(base + '¿Sigue disponible?');
-      const textoReservado    = encodeURIComponent(base + 'Veo que está reservado. ¿Puedo confirmar si se libera o dejar mis datos?');
-      const textoNoDisponible = encodeURIComponent(base + 'Está agotado. Por favor, avísenme cuando llegue nuevamente 🙏');
+      const textoDisponible     = encodeURIComponent(base + '¿Sigue disponible?');
+      const textoReservado      = encodeURIComponent(base + 'Veo que está reservado. ¿Puedo confirmar si se libera o dejar mis datos?');
+      const textoNoDisponible   = encodeURIComponent(base + 'Está agotado. Por favor, avísenme cuando llegue nuevamente 🙏');
       const textoQuieroReservar = encodeURIComponent(base + 'Quisiera reservarlo, por favor. ¿Cómo seguimos?');
 
       // Apariencia + CTA según estado
@@ -183,6 +192,7 @@
             const map = leerReservas();
             delete map[p.id];
             escribirReservas(map);
+            showToast('Reserva quitada');
             render(lista);
           };
         } else {
@@ -206,6 +216,7 @@
           const map = leerReservas();
           map[p.id] = true;
           escribirReservas(map);
+          showToast('Producto reservado');
           window.open(`https://wa.me/${TEL}?text=${textoQuieroReservar}`, '_blank');
           render(lista);
         };

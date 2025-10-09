@@ -32,12 +32,19 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="assets/nav.css">
 
-  <!-- Estilos del banner animado + micro animaciones -->
+  <!-- Estilos del banner “card” con ticker -->
   <style>
     :root{
-      --ticker-speed: 28s;       /* ↓ Más chico = más rápido */
-      --ticker-gap: 1.75rem;
-      --banner-bg: linear-gradient(90deg,#0f172a 0%, #111827 100%);
+      --ticker-speed: 28s;                 /* ↓ Más chico = más rápido */
+      --ticker-gap: 1.6rem;
+
+      /* Colores/gradientes del banner-card */
+      --card-bg: linear-gradient(140deg,#0b1220 0%, #0f172a 55%, #0b1220 100%);
+      --card-glow: radial-gradient(800px 200px at 30% -40%, rgba(56,189,248,.30), transparent 60%),
+                   radial-gradient(600px 200px at 85% 140%, rgba(124,58,237,.25), transparent 60%);
+      --card-border: rgba(255,255,255,.18);
+
+      /* Chips */
       --chip-1: linear-gradient(135deg,#22c55e 0%, #16a34a 100%);
       --chip-2: linear-gradient(135deg,#06b6d4 0%, #0ea5e9 100%);
       --chip-3: linear-gradient(135deg,#f59e0b 0%, #f97316 100%);
@@ -46,32 +53,63 @@
       --chip-text: #0b1220;
     }
 
-    /* =============== BANNER “TICKER” IZQ → DER =============== */
-    .ticker{
+    /* ===== Shell pegajosa con padding para que la card "respire" */
+    .ticker-shell{
       position: sticky; top: 0; z-index: 1400;
-      background: var(--banner-bg);
-      border-bottom: 1px solid rgba(255,255,255,.12);
-      overflow: hidden;
-      isolation: isolate;          /* Para confetti */
+      padding: 10px 14px 0 14px;
+      background: linear-gradient(180deg, rgba(11,18,32,.85), rgba(11,18,32,0));
+      backdrop-filter: blur(2px);
     }
-    .ticker__wrap{
+
+    /* ===== La tarjeta bonita que contiene el ticker ===== */
+    .ticker-card{
       position: relative;
-      display: flex; align-items: center;
-      gap: 10px;
+      overflow: hidden;
+      border-radius: 14px;
+      border: 1px solid var(--card-border);
+      background: var(--card-bg);
+      box-shadow: 0 18px 40px rgba(0,0,0,.45);
+      isolation: isolate;
+    }
+    .ticker-card::before{
+      content:""; position:absolute; inset:-2px;
+      background: var(--card-glow);
+      z-index: 0; pointer-events:none;
+    }
+    .ticker-card::after{
+      /* Brillito sutil en la parte superior */
+      content:""; position:absolute; left:0; right:0; top:0; height:2px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
+      opacity:.6; z-index:1; pointer-events:none;
+    }
+
+    .ticker{
+      position: relative; z-index: 2; /* encima del glow */
       padding: 10px 12px;
+    }
+
+    .ticker__wrap{
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 8px;
       color: #fff;
     }
     .ticker__close{
-      border: none; background: transparent; color: #cbd5e1;
-      font-size: 18px; cursor: pointer; padding: 4px 8px; line-height: 1;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(15,23,42,.6);
+      color: #cbd5e1;
+      font-size: 16px; cursor: pointer;
+      padding: 6px 10px; line-height: 1;
+      border-radius: 10px;
+      transition: .15s ease;
     }
-    .ticker__close:hover{ color: #fff; }
+    .ticker__close:hover{ color:#fff; background: rgba(15,23,42,.8); transform: translateY(-1px); }
 
     .ticker__viewport{
-      flex: 1; overflow: hidden; white-space: nowrap; mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
+      overflow: hidden; white-space: nowrap;
+      mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
     }
-
-    /* Track con dos copias → loop continuo */
     .ticker__track{
       display: inline-flex; gap: var(--ticker-gap); align-items: center;
       animation: ticker-ltr var(--ticker-speed) linear infinite;
@@ -79,57 +117,33 @@
     }
     .ticker__viewport:hover .ticker__track{ animation-play-state: paused; }
 
-    /* Chips coloridos */
     .chip{
       display: inline-flex; align-items: center; gap: .55rem;
       color: var(--chip-text);
       border-radius: 999px;
-      padding: .5rem .9rem;
+      padding: .55rem .95rem;
       font-weight: 700;
-      box-shadow: 0 8px 20px rgba(0,0,0,.25);
+      box-shadow: 0 10px 24px rgba(0,0,0,.28);
       border: 1px solid rgba(255,255,255,.15);
       white-space: nowrap;
     }
     .chip--1{ background: var(--chip-1); }
     .chip--2{ background: var(--chip-2); }
     .chip--3{ background: var(--chip-3); }
-    .chip--4{ background: var(--chip-4); color:#0b1220; }
-    .chip--5{ background: var(--chip-5); color:#0b1220; }
+    .chip--4{ background: var(--chip-4); }
+    .chip--5{ background: var(--chip-5); }
 
-    /* Animación: de IZQUIERDA → DERECHA en loop continuo */
     @keyframes ticker-ltr{
       0%   { transform: translateX(-50%); }
       100% { transform: translateX(0); }
     }
 
-    /* Confetti sutil (decorativo) */
-    .ticker::before, .ticker::after{
-      content:''; position:absolute; inset:0; pointer-events:none;
-      background:
-        radial-gradient(circle at 10% 20%, rgba(255,255,255,.06) 0 2px, transparent 2px),
-        radial-gradient(circle at 80% 30%, rgba(255,255,255,.06) 0 2px, transparent 2px),
-        radial-gradient(circle at 30% 70%, rgba(255,255,255,.06) 0 2px, transparent 2px),
-        radial-gradient(circle at 60% 50%, rgba(255,255,255,.06) 0 2px, transparent 2px);
-      opacity:.8; mix-blend-mode: screen;
-      animation: confetti 12s linear infinite;
-    }
-    .ticker::after{
-      animation-duration: 18s;
-      opacity:.5;
-    }
-    @keyframes confetti{
-      0%   { transform: translateY(-5%); }
-      100% { transform: translateY(5%); }
-    }
-
-    /* Respeto accesibilidad, salvo que fuerce animación */
+    /* Accesibilidad: si el usuario reduce movimiento, pausamos (salvo force) */
     @media (prefers-reduced-motion: reduce){
-      .ticker:not([data-anim="force"]) .ticker__track{ animation: none; }
-      .ticker:not([data-anim="force"])::before,
-      .ticker:not([data-anim="force"])::after { animation: none; }
+      .ticker-card:not([data-anim="force"]) .ticker__track{ animation: none; }
     }
 
-    /* --------- Micro-interacciones del resto --------- */
+    /* Micro-interacciones resto (igual que ya tenías) */
     .card{
       transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
       will-change: transform;
@@ -169,50 +183,50 @@
   </style>
 
   <!-- JS del sitio -->
-  <script src="assets/main.js?v=3" defer></script>
+  <script src="assets/main.js?v=4" defer></script>
 </head>
 <body>
 
-  <!-- =============== BANNER ANIMADO: IZQ → DER =============== -->
-  <div class="ticker" id="promoBanner" data-anim="force">
-    <div class="ticker__wrap">
-      <div class="ticker__viewport" aria-hidden="true">
-        <!-- Track duplicado: dos copias para loop perfecto -->
-        <div class="ticker__track">
-          <!-- COPIA 1 -->
-          <span class="chip chip--1">🎉 ¡Promo de lanzamiento!</span>
-          <span class="chip chip--2">🚚 Envíos a Asunción / Gran Asunción</span>
-          <span class="chip chip--3">💬 Reservá por WhatsApp</span>
-          <span class="chip chip--4">🔧 Soporte y asesoría</span>
-          <span class="chip chip--5">💳 Aceptamos efectivo y transferencia</span>
-
-          <!-- COPIA 2 (idéntica) -->
-          <span class="chip chip--1">🎉 ¡Promo de lanzamiento!</span>
-          <span class="chip chip--2">🚚 Envíos a Asunción / Gran Asunción</span>
-          <span class="chip chip--3">💬 Reservá por WhatsApp</span>
-          <span class="chip chip--4">🔧 Soporte y asesoría</span>
-          <span class="chip chip--5">💳 Aceptamos efectivo y transferencia</span>
+  <!-- ========= NUEVO: Banner dentro de “tarjeta” elegante ========= -->
+  <div class="ticker-shell" id="promoShell">
+    <div class="ticker-card" id="promoBanner" data-anim="force">
+      <div class="ticker">
+        <div class="ticker__wrap">
+          <div class="ticker__viewport" aria-hidden="true">
+            <div class="ticker__track">
+              <!-- Copia 1 -->
+              <span class="chip chip--1">🎉 ¡Promo de lanzamiento!</span>
+              <span class="chip chip--2">🚚 Envíos a Asunción / Gran Asunción</span>
+              <span class="chip chip--3">💬 Reservá por WhatsApp</span>
+              <span class="chip chip--4">🔧 Soporte y asesoría</span>
+              <span class="chip chip--5">💳 Efectivo y transferencia</span>
+              <!-- Copia 2 -->
+              <span class="chip chip--1">🎉 ¡Promo de lanzamiento!</span>
+              <span class="chip chip--2">🚚 Envíos a Asunción / Gran Asunción</span>
+              <span class="chip chip--3">💬 Reservá por WhatsApp</span>
+              <span class="chip chip--4">🔧 Soporte y asesoría</span>
+              <span class="chip chip--5">💳 Efectivo y transferencia</span>
+            </div>
+          </div>
+          <button class="ticker__close" aria-label="Cerrar aviso" title="Cerrar" onclick="
+            localStorage.setItem('promoBannerClosed','1');
+            document.getElementById('promoShell').style.display='none';
+          ">×</button>
         </div>
       </div>
-
-      <!-- Botón cerrar (opcional) -->
-      <button class="ticker__close" aria-label="Cerrar aviso" title="Cerrar" onclick="
-        localStorage.setItem('promoBannerClosed','1');
-        this.closest('.ticker').style.display='none';
-      ">×</button>
     </div>
   </div>
   <script>
-    // Mostrar/ocultar según recuerdo local (podés borrar este bloque si querés que siempre aparezca)
+    // Respetamos preferencia del usuario: si lo cerró, no lo mostramos
     (function(){
       try{
         if(localStorage.getItem('promoBannerClosed') === '1'){
-          document.getElementById('promoBanner').style.display='none';
+          document.getElementById('promoShell').style.display='none';
         }
       }catch(e){}
     })();
   </script>
-  <!-- ========================================================== -->
+  <!-- =============================================================== -->
 
   <!-- HEADER -->
   <header class="container">
@@ -319,7 +333,6 @@
       <template id="tplProducto">
         <article class="card" style="background:#0b1220; border:1px solid rgba(255,255,255,.1); border-radius:16px; overflow:hidden; display:flex; flex-direction:column;">
           <div style="position:relative; aspect-ratio:1/1; background:#0d1b2a;">
-            <!-- NOTA: el src final lo setea el JS con lazy-load -->
             <img alt="" loading="lazy" class="lazy-img" style="width:100%; height:100%; object-fit:cover; display:block;">
             <span class="badge" style="position:absolute; top:10px; left:10px; background:#1d4ed8; color:#fff; padding:4px 8px; border-radius:999px; font-size:12px;"></span>
           </div>
@@ -403,7 +416,7 @@
   <!-- Botón Volver arriba (visible) -->
   <a href="#inicio" class="to-top show" aria-label="Volver arriba">↑</a>
 
-  <!-- Contenedor Toast -->
+  <!-- Toast -->
   <div id="toast" role="status" aria-live="polite"></div>
 
   <!-- Catálogo (rompe caché) -->

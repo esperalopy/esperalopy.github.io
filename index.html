@@ -32,118 +32,108 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="assets/nav.css">
 
-  <!-- Estilos del banner “card” con ticker -->
+  <!-- ========= ESTILOS ESPECÍFICOS DEL BANNER EN TARJETA (prefijo pb-) ========= -->
   <style>
+    /* Si queda un ticker viejo en tu HTML, lo forzamos a ocultarse */
+    #promoShell, #promoBanner, .ticker-shell, .ticker-card { display:none !important; }
+
     :root{
-      --ticker-speed: 28s;                 /* ↓ Más chico = más rápido */
-      --ticker-gap: 1.6rem;
+      --pb-speed: 28s;                 /* Duración de desplazamiento (menor = más rápido) */
+      --pb-gap: 1.4rem;
 
-      /* Colores/gradientes del banner-card */
-      --card-bg: linear-gradient(140deg,#0b1220 0%, #0f172a 55%, #0b1220 100%);
-      --card-glow: radial-gradient(800px 200px at 30% -40%, rgba(56,189,248,.30), transparent 60%),
-                   radial-gradient(600px 200px at 85% 140%, rgba(124,58,237,.25), transparent 60%);
-      --card-border: rgba(255,255,255,.18);
+      --pb-border: rgba(255,255,255,.16);
+      --pb-text: #e5e7eb;
 
-      /* Chips */
-      --chip-1: linear-gradient(135deg,#22c55e 0%, #16a34a 100%);
-      --chip-2: linear-gradient(135deg,#06b6d4 0%, #0ea5e9 100%);
-      --chip-3: linear-gradient(135deg,#f59e0b 0%, #f97316 100%);
-      --chip-4: linear-gradient(135deg,#a78bfa 0%, #6366f1 100%);
-      --chip-5: linear-gradient(135deg,#ef4444 0%, #f43f5e 100%);
-      --chip-text: #0b1220;
+      --pb-bg: linear-gradient(120deg,#0b1220 0%, #0e1629 55%, #0b1220 100%);
+      --pb-glow-1: radial-gradient(700px 220px at 12% -40%, rgba(56,189,248,.30), transparent 60%);
+      --pb-glow-2: radial-gradient(600px 220px at 85% 140%, rgba(124,58,237,.22), transparent 60%);
+
+      --pb-chip-text: #0b1220;
+      --pb-chip-1: linear-gradient(135deg,#22c55e 0%, #16a34a 100%);
+      --pb-chip-2: linear-gradient(135deg,#06b6d4 0%, #0ea5e9 100%);
+      --pb-chip-3: linear-gradient(135deg,#f59e0b 0%, #f97316 100%);
+      --pb-chip-4: linear-gradient(135deg,#a78bfa 0%, #6366f1 100%);
+      --pb-chip-5: linear-gradient(135deg,#ef4444 0%, #f43f5e 100%);
     }
 
-    /* ===== Shell pegajosa con padding para que la card "respire" */
-    .ticker-shell{
+    /* Contenedor pegajoso (deja respirar al header) */
+    .pb-shell{
       position: sticky; top: 0; z-index: 1400;
       padding: 10px 14px 0 14px;
-      background: linear-gradient(180deg, rgba(11,18,32,.85), rgba(11,18,32,0));
+      background: linear-gradient(180deg, rgba(11,18,32,.9), rgba(11,18,32,0));
       backdrop-filter: blur(2px);
     }
 
-    /* ===== La tarjeta bonita que contiene el ticker ===== */
-    .ticker-card{
-      position: relative;
-      overflow: hidden;
-      border-radius: 14px;
-      border: 1px solid var(--card-border);
-      background: var(--card-bg);
+    /* La TARJETA del banner */
+    .pb-card{
+      position: relative; overflow: hidden; color: var(--pb-text);
+      border-radius: 14px; border: 1px solid var(--pb-border);
+      background: var(--pb-bg);
       box-shadow: 0 18px 40px rgba(0,0,0,.45);
       isolation: isolate;
     }
-    .ticker-card::before{
-      content:""; position:absolute; inset:-2px;
-      background: var(--card-glow);
-      z-index: 0; pointer-events:none;
+    .pb-card::before{
+      content:""; position:absolute; inset:-2px; z-index:0;
+      background: var(--pb-glow-1), var(--pb-glow-2);
+      pointer-events:none;
     }
-    .ticker-card::after{
-      /* Brillito sutil en la parte superior */
-      content:""; position:absolute; left:0; right:0; top:0; height:2px;
+    .pb-card::after{
+      content:""; position:absolute; left:0; right:0; top:0; height:2px; z-index:1;
       background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent);
-      opacity:.6; z-index:1; pointer-events:none;
+      opacity:.6; pointer-events:none;
     }
 
-    .ticker{
-      position: relative; z-index: 2; /* encima del glow */
+    .pb{
+      position: relative; z-index: 2;
       padding: 10px 12px;
     }
-
-    .ticker__wrap{
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: center;
-      gap: 8px;
-      color: #fff;
+    .pb-wrap{
+      display:grid; grid-template-columns: 1fr auto; align-items:center; gap:8px;
     }
-    .ticker__close{
-      border: 1px solid rgba(255,255,255,.18);
+    .pb-close{
+      border: 1px solid var(--pb-border);
       background: rgba(15,23,42,.6);
-      color: #cbd5e1;
-      font-size: 16px; cursor: pointer;
-      padding: 6px 10px; line-height: 1;
-      border-radius: 10px;
+      color:#cbd5e1; font-size:16px; cursor:pointer;
+      padding:6px 10px; border-radius:10px; line-height:1;
       transition: .15s ease;
     }
-    .ticker__close:hover{ color:#fff; background: rgba(15,23,42,.8); transform: translateY(-1px); }
+    .pb-close:hover{ color:#fff; background: rgba(15,23,42,.8); transform: translateY(-1px); }
 
-    .ticker__viewport{
-      overflow: hidden; white-space: nowrap;
+    .pb-viewport{
+      overflow:hidden; white-space:nowrap;
       mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
     }
-    .ticker__track{
-      display: inline-flex; gap: var(--ticker-gap); align-items: center;
-      animation: ticker-ltr var(--ticker-speed) linear infinite;
+    .pb-track{
+      display:inline-flex; gap:var(--pb-gap); align-items:center;
+      animation: pb-move var(--pb-speed) linear infinite;
       will-change: transform;
     }
-    .ticker__viewport:hover .ticker__track{ animation-play-state: paused; }
+    .pb-viewport:hover .pb-track{ animation-play-state: paused; }
 
-    .chip{
-      display: inline-flex; align-items: center; gap: .55rem;
-      color: var(--chip-text);
+    .pb-chip{
+      display:inline-flex; align-items:center; gap:.55rem;
+      color: var(--pb-chip-text);
       border-radius: 999px;
-      padding: .55rem .95rem;
-      font-weight: 700;
+      padding:.55rem .95rem;
+      font-weight:700; white-space:nowrap;
       box-shadow: 0 10px 24px rgba(0,0,0,.28);
-      border: 1px solid rgba(255,255,255,.15);
-      white-space: nowrap;
+      border:1px solid rgba(255,255,255,.15);
     }
-    .chip--1{ background: var(--chip-1); }
-    .chip--2{ background: var(--chip-2); }
-    .chip--3{ background: var(--chip-3); }
-    .chip--4{ background: var(--chip-4); }
-    .chip--5{ background: var(--chip-5); }
+    .pb-1{ background: var(--pb-chip-1); }
+    .pb-2{ background: var(--pb-chip-2); }
+    .pb-3{ background: var(--pb-chip-3); }
+    .pb-4{ background: var(--pb-chip-4); }
+    .pb-5{ background: var(--pb-chip-5); }
 
-    @keyframes ticker-ltr{
+    @keyframes pb-move{
       0%   { transform: translateX(-50%); }
       100% { transform: translateX(0); }
     }
-
-    /* Accesibilidad: si el usuario reduce movimiento, pausamos (salvo force) */
     @media (prefers-reduced-motion: reduce){
-      .ticker-card:not([data-anim="force"]) .ticker__track{ animation: none; }
+      .pb-card:not([data-anim="force"]) .pb-track{ animation:none; }
     }
 
-    /* Micro-interacciones resto (igual que ya tenías) */
+    /* Unos hover suaves que ya tenías para cards/botones */
     .card{
       transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
       will-change: transform;
@@ -153,80 +143,53 @@
       box-shadow: 0 14px 28px rgba(0,0,0,.3);
       border-color: rgba(255,255,255,.2) !important;
     }
-    .card a.btnWp, .card .btnReservar{
-      transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
-    }
-    .card a.btnWp:hover, .card .btnReservar:hover{
-      transform: translateY(-2px) scale(1.015);
-      filter: brightness(1.04);
-      box-shadow: 0 10px 18px rgba(0,0,0,.3);
-    }
-    .lazy-img{
-      filter: blur(12px);
-      transform: scale(1.02);
-      transition: filter .35s ease, transform .35s ease, opacity .25s ease;
-      opacity: .9;
-    }
-    .lazy-loaded{ filter: blur(0); transform: scale(1); opacity: 1; }
-
-    #toast{
-      position: fixed; left: 50%; bottom: 20px;
-      transform: translateX(-50%) translateY(20px);
-      background: rgba(15,23,42,.96); color: #fff;
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 12px; padding: 12px 16px; font-size: .95rem;
-      box-shadow: 0 12px 28px rgba(0,0,0,.35);
-      opacity: 0; pointer-events: none;
-      transition: opacity .2s ease, transform .2s ease; z-index: 1000;
-    }
-    #toast.show{ opacity:1; transform: translateX(-50%) translateY(0); }
   </style>
 
   <!-- JS del sitio -->
-  <script src="assets/main.js?v=4" defer></script>
+  <script src="assets/main.js" defer></script>
 </head>
 <body>
 
-  <!-- ========= NUEVO: Banner dentro de “tarjeta” elegante ========= -->
-  <div class="ticker-shell" id="promoShell">
-    <div class="ticker-card" id="promoBanner" data-anim="force">
-      <div class="ticker">
-        <div class="ticker__wrap">
-          <div class="ticker__viewport" aria-hidden="true">
-            <div class="ticker__track">
+  <!-- =============== BANNER NUEVO EN TARJETA (pb-card) =============== -->
+  <div class="pb-shell" id="pbShell">
+    <div class="pb-card" id="pbCard" data-anim="force">
+      <div class="pb">
+        <div class="pb-wrap">
+          <div class="pb-viewport" aria-hidden="true">
+            <div class="pb-track">
               <!-- Copia 1 -->
-              <span class="chip chip--1">🎉 ¡Promo de lanzamiento!</span>
-              <span class="chip chip--2">🚚 Envíos a Asunción / Gran Asunción</span>
-              <span class="chip chip--3">💬 Reservá por WhatsApp</span>
-              <span class="chip chip--4">🔧 Soporte y asesoría</span>
-              <span class="chip chip--5">💳 Efectivo y transferencia</span>
-              <!-- Copia 2 -->
-              <span class="chip chip--1">🎉 ¡Promo de lanzamiento!</span>
-              <span class="chip chip--2">🚚 Envíos a Asunción / Gran Asunción</span>
-              <span class="chip chip--3">💬 Reservá por WhatsApp</span>
-              <span class="chip chip--4">🔧 Soporte y asesoría</span>
-              <span class="chip chip--5">💳 Efectivo y transferencia</span>
+              <span class="pb-chip pb-1">🎉 ¡Promo de lanzamiento!</span>
+              <span class="pb-chip pb-2">🚚 Envíos a Asunción / Gran Asunción</span>
+              <span class="pb-chip pb-3">💬 Reservá por WhatsApp</span>
+              <span class="pb-chip pb-4">🔧 Soporte y asesoría</span>
+              <span class="pb-chip pb-5">💳 Efectivo y transferencia</span>
+              <!-- Copia 2 (duplicamos para bucle continuo) -->
+              <span class="pb-chip pb-1">🎉 ¡Promo de lanzamiento!</span>
+              <span class="pb-chip pb-2">🚚 Envíos a Asunción / Gran Asunción</span>
+              <span class="pb-chip pb-3">💬 Reservá por WhatsApp</span>
+              <span class="pb-chip pb-4">🔧 Soporte y asesoría</span>
+              <span class="pb-chip pb-5">💳 Efectivo y transferencia</span>
             </div>
           </div>
-          <button class="ticker__close" aria-label="Cerrar aviso" title="Cerrar" onclick="
-            localStorage.setItem('promoBannerClosed','1');
-            document.getElementById('promoShell').style.display='none';
+          <button class="pb-close" aria-label="Cerrar aviso" title="Cerrar" onclick="
+            try{ localStorage.setItem('pbClosed','1'); }catch(e){}
+            document.getElementById('pbShell').style.display='none';
           ">×</button>
         </div>
       </div>
     </div>
   </div>
   <script>
-    // Respetamos preferencia del usuario: si lo cerró, no lo mostramos
+    // Si el usuario ya lo cerró, no lo mostramos
     (function(){
       try{
-        if(localStorage.getItem('promoBannerClosed') === '1'){
-          document.getElementById('promoShell').style.display='none';
+        if(localStorage.getItem('pbClosed')==='1'){
+          document.getElementById('pbShell').style.display='none';
         }
       }catch(e){}
     })();
   </script>
-  <!-- =============================================================== -->
+  <!-- ================================================================ -->
 
   <!-- HEADER -->
   <header class="container">
@@ -378,10 +341,6 @@
           <summary>¿Los productos tienen garantía?</summary>
           <p>Sí. El plazo depende del artículo y su estado (nuevo/semineuvo/usado). Siempre dejamos el detalle en la descripción o por chat.</p>
         </details>
-        <details>
-          <summary>¿Qué significa “Usado • Muy bueno / Excelente”?</summary>
-          <p>Es el estado estético/funcional: probados, limpios y listos para usar. Ante cualquier duda, te mandamos fotos y video por WhatsApp.</p>
-        </details>
       </div>
     </section>
   </main>
@@ -416,10 +375,7 @@
   <!-- Botón Volver arriba (visible) -->
   <a href="#inicio" class="to-top show" aria-label="Volver arriba">↑</a>
 
-  <!-- Toast -->
-  <div id="toast" role="status" aria-live="polite"></div>
-
-  <!-- Catálogo (rompe caché) -->
-  <script src="assets/js/products.js?v=22" defer></script>
+  <!-- Catálogo (rompe caché para asegurar cambios) -->
+  <script src="assets/js/products.js?v=23" defer></script>
 </body>
 </html>

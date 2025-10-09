@@ -1,102 +1,106 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Panel — Esperalopy</title>
-  <meta name="robots" content="noindex">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Panel de administración — Esperalopy</title>
   <style>
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Inter,Arial,sans-serif;
-         background:#0b1220;color:#e5e7eb;margin:0;padding:0;display:grid;place-items:center;height:100vh}
-    .wrap{max-width:720px;padding:24px}
-    h1{margin:0 0 8px 0;font-size:28px}
-    p{opacity:.85;margin:.5rem 0 1.25rem 0}
-    .note{border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:14px 16px;background:#0f172a}
-    code{background:#111827;border-radius:6px;padding:2px 6px}
-    a.btn{display:inline-block;margin-top:14px;padding:10px 14px;border-radius:10px;
-          background:#22c55e;color:#0b1220;text-decoration:none;font-weight:700}
+    :root{
+      --bg:#0b1220;--panel:#0f172a;--txt:#e5e7eb;--muted:#94a3b8;--accent:#22c55e;
+    }
+    html,body{height:100%}
+    body{
+      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial;
+      background:var(--bg); color:var(--txt);
+      display:grid; place-items:center;
+    }
+    .wrap{max-width:780px; width:100%; padding:28px}
+    .card{
+      background:var(--panel); border:1px solid rgba(255,255,255,.08);
+      border-radius:14px; padding:22px 22px 8px;
+    }
+    h1{margin:0 0 8px 0; font-size:20px}
+    p{margin:.25rem 0; color:var(--muted)}
+    .hint{font-size:14px; margin-top:10px}
+    .btn{
+      display:inline-block; margin-top:16px; padding:10px 14px; border-radius:10px;
+      background:var(--accent); color:#0b1220; text-decoration:none; font-weight:600
+    }
   </style>
-
-  <!-- Inicialización manual -->
-  <script>window.CMS_MANUAL_INIT = true;</script>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 </head>
 <body>
-  <div class="wrap" id="fallback">
-    <h1>Panel de administración</h1>
-    <p>Esperalopy — Cargando el CMS…</p>
-    <div class="note">
-      <p>Si ves esta pantalla por más de 10s, actualizá (Ctrl+F5 / Cmd+Shift+R).</p>
-      <p>Ruta del panel: <code>/admin</code> — Ej.: <code>https://TUUSUARIO.github.io/admin</code></p>
+  <div class="wrap">
+    <div class="card">
+      <h1>Panel de administración</h1>
+      <p>Esperalopy — Cargando el CMS…</p>
+      <p class="hint">Si ves esta pantalla por más de 10s, actualizá (Ctrl+F5 / Cmd+Shift+R).</p>
+      <a class="btn" href="/">Ir al sitio</a>
     </div>
-    <a class="btn" href="/">Ir al sitio</a>
   </div>
 
+  <!-- Cargamos Decap CMS -->
   <script>
-    // Config embebida (única fuente de verdad)
-    const config = {
-      backend: {
-        name: "github",
-        repo: "esperalopy/esperalopy.github.io",
-        branch: "main",
-        base_url: "https://decap-oauth.netlify.app",
-        auth_endpoint: "/api/auth"
-      },
-      media_folder: "assets/img/productos",
-      public_folder: "/assets/img/productos",
-      locale: "es",
-      publish_mode: "editorial_workflow",
+    // Usaremos configuración manual embebida (sin config.yml)
+    window.CMS_MANUAL_INIT = true;
+  </script>
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 
-      collections: [
-        {
-          label: "Productos",
-          name: "productos",
-          delete: true,
-          editor: { preview: false },
-          files: [
-            {
-              label: "Catálogo",
-              name: "catalogo",
-              file: "assets/products.json",
-              format: "json",
-              fields: [
-                {
-                  label: "Productos",
-                  name: "items",
-                  widget: "list",
-                  summary: "{{fields.nombre}} — Gs. {{fields.precio}}",
-                  fields: [
-                    { label: "ID", name: "id", widget: "string", hint: "único, ej: prod-001" },
-                    { label: "Nombre", name: "nombre", widget: "string" },
-                    { label: "Descripción", name: "descripcion", widget: "text", required: false },
-                    { label: "Precio (Gs.)", name: "precio", widget: "number", value_type: "int", min: 0 },
-                    { label: "Moneda", name: "moneda", widget: "string", default: "PYG" },
-                    { label: "Categoría", name: "categoria", widget: "select", options: ["Telefonía","Computación","Audio","Electro"] },
-                    { label: "Imagen", name: "imagen", widget: "image", media_folder: "", public_folder: "" },
-                    { label: "Estado (badge)", name: "estado", widget: "string", required: false, hint: "ej.: Usado • Bueno / Seminuevo / Agotado" },
-                    { label: "Disponible", name: "disponible", widget: "boolean", default: true }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ]
-    };
+  <script>
+    // Inicializamos el CMS con la configuración para GitHub + proxy público de Decap
+    CMS.init({
+      config: {
+        backend: {
+          name: "github",
+          repo: "esperalopy/esperalopy.github.io",
+          branch: "main",
+          base_url: "https://decap-oauth.netlify.app",
+          auth_endpoint: "api/auth",
+          app_id: "Ov23liJJB4XnGWkVIAW1"   // <= Tu Client ID
+        },
 
-    // Importante: desactivar carga del config.yml para evitar duplicado
-    CMS.init({ config, load_config_file: false });
+        locale: "es",
+        publish_mode: "editorial_workflow",
 
-    // Ocultar fallback cuando el CMS monte su app
-    const observer = new MutationObserver(() => {
-      const app = document.querySelector('[data-testid="app"]');
-      if (app) {
-        const fb = document.getElementById('fallback');
-        if (fb) fb.style.display = 'none';
-        observer.disconnect();
+        media_folder: "assets/img/productos",
+        public_folder: "/assets/img/productos",
+
+        collections: [
+          {
+            label: "Catálogo",
+            name: "catalogo",
+            files: [
+              {
+                label: "Productos",
+                name: "productos",
+                file: "assets/products.json",
+                format: "json",
+                fields: [
+                  {
+                    label: "Items",
+                    name: "items",
+                    widget: "list",
+                    summary: "{{fields.nombre}} — Gs. {{fields.precio}}",
+                    fields: [
+                      { label: "ID",         name: "id",          widget: "string", hint: "Único. Ej: prod-001" },
+                      { label: "Nombre",     name: "nombre",      widget: "string" },
+                      { label: "Descripción",name: "descripcion", widget: "text", required: false },
+                      { label: "Precio (Gs.)",name: "precio",      widget: "number", value_type: "int", min: 0 },
+                      { label: "Moneda",     name: "moneda",      widget: "string", default: "PYG" },
+                      { label: "Categoría",  name: "categoria",   widget: "select",
+                        options: ["Telefonía","Computación","Audio","Electro"] },
+                      { label: "Imagen",     name: "imagen",      widget: "image", media_folder: "", public_folder: "" },
+                      { label: "Estado (badge)", name: "estado",   widget: "select",
+                        options: ["Nuevo","Seminuevo","Usado • Muy bueno","Usado • Bueno","Agotado"], required: false },
+                      { label: "Disponible", name: "disponible",  widget: "boolean", default: true }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
       }
     });
-    observer.observe(document.body, { childList: true, subtree: true });
   </script>
 </body>
 </html>

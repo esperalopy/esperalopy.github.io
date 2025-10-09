@@ -32,24 +32,21 @@
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="assets/nav.css">
 
-  <!-- ========= ESTILOS del nuevo BANNER en TARJETA (prefijo pb-) ========= -->
+  <!-- ========= ESTILOS del BANNER en TARJETA con TEMAS ========= -->
   <style>
-    /* Si tenías tickers previos, los forzamos a ocultarse para no duplicar */
+    /* Oculta tickers viejos si quedaran */
     #promoShell, #promoBanner, .ticker-shell, .ticker-card { display:none !important; }
 
     :root{
-      --pb-speed: 28s;               /* Velocidad del desplazamiento */
-      --pb-gap: 1.2rem;              /* Separación entre chips */
+      --pb-speed: 28s;
+      --pb-gap: 1.2rem;
 
-      /* Colores base */
       --pb-text: #e5e7eb;
-      --pb-card-bg: #0b1220;         /* Fondo interior de la tarjeta */
+      --pb-card-bg: #0b1220;         /* se sobreescribe por tema */
       --pb-card-pattern: rgba(255,255,255,.04);
 
-      /* Degradado del borde neón */
-      --pb-neon: linear-gradient(90deg,#22d3ee 0%, #a78bfa 25%, #f472b6 50%, #22d3ee 100%);
+      --pb-neon: linear-gradient(90deg,#22d3ee 0%, #a78bfa 25%, #f472b6 50%, #22d3ee 100%); /* se puede sobreescribir */
 
-      /* Fondos de chips */
       --pb-chip-text:#0b1220;
       --pb-chip-1: linear-gradient(135deg,#22c55e 0%, #16a34a 100%);
       --pb-chip-2: linear-gradient(135deg,#06b6d4 0%, #0ea5e9 100%);
@@ -58,27 +55,47 @@
       --pb-chip-5: linear-gradient(135deg,#ef4444 0%, #f43f5e 100%);
     }
 
-    /* CONTENEDOR pegajoso para que se mantenga arriba pero con aire */
+    /* ===================== TEMAS ===================== */
+    /* TURQUESA oscuro (default visual y elegante) */
+    .pb-theme-turq{
+      --pb-card-bg: #0b2a2f; /* turquesa muy oscuro */
+      --pb-card-pattern: rgba(255,255,255,.045);
+      --pb-neon: linear-gradient(90deg,#22d3ee 0%, #14b8a6 40%, #0ea5e9 70%, #22d3ee 100%);
+      --pb-chip-1: linear-gradient(135deg,#22c55e 0%, #16a34a 100%);
+      --pb-chip-2: linear-gradient(135deg,#06b6d4 0%, #0ea5e9 100%);
+      --pb-chip-3: linear-gradient(135deg,#f59e0b 0%, #f97316 100%);
+      --pb-chip-4: linear-gradient(135deg,#67e8f9 0%, #38bdf8 100%);
+      --pb-chip-5: linear-gradient(135deg,#ef4444 0%, #f43f5e 100%);
+    }
+    /* ÁMBAR / AMARILLO (muy llamativo) */
+    .pb-theme-amber{
+      --pb-card-bg: #3a2a07; /* marrón oscuro cálido */
+      --pb-card-pattern: rgba(255,255,255,.06);
+      --pb-neon: linear-gradient(90deg,#fbbf24 0%, #f59e0b 35%, #f97316 70%, #fbbf24 100%);
+      --pb-chip-1: linear-gradient(135deg,#fde047 0%, #facc15 100%); /* chips más cálidos */
+      --pb-chip-2: linear-gradient(135deg,#f59e0b 0%, #f97316 100%);
+      --pb-chip-3: linear-gradient(135deg,#fda4af 0%, #fb7185 100%);
+      --pb-chip-4: linear-gradient(135deg,#fcd34d 0%, #f59e0b 100%);
+      --pb-chip-5: linear-gradient(135deg,#ef4444 0%, #f43f5e 100%);
+    }
+    /* ================================================= */
+
     .pb-shell{
       position: sticky; top: 0; z-index: 1400;
-      padding: 10px 14px 0 14px;    /* aire con el header */
+      padding: 10px 14px 0 14px;
       background: linear-gradient(180deg, rgba(11,18,32,.85), rgba(11,18,32,0));
       backdrop-filter: blur(2px);
     }
-
-    /* TARJETA con borde NEÓN y PATRÓN interno (¡ahora sí se ve!) */
     .pb-card{
       position: relative;
       border-radius: 16px;
       overflow: hidden;
       box-shadow: 0 28px 60px rgba(0,0,0,.55);
       margin-bottom: 12px;
-      /* Truco: capa para el borde neón */
     }
     .pb-card::before{
       content: "";
-      position: absolute;
-      inset: 0;
+      position: absolute; inset: 0;
       padding: 2px;                       /* grosor del borde */
       background: var(--pb-neon);
       border-radius: inherit;
@@ -86,11 +103,10 @@
         linear-gradient(#000 0 0) content-box,
         linear-gradient(#000 0 0);
       -webkit-mask-composite: xor;
-              mask-composite: exclude;   /* hace “hueco” para que se vea el interior */
+              mask-composite: exclude;
       pointer-events: none;
     }
     .pb-inner{
-      position: relative;
       border-radius: inherit;
       background:
         repeating-linear-gradient(
@@ -101,8 +117,6 @@
         var(--pb-card-bg);
       padding: 10px 12px;
     }
-
-    /* Layout del banner */
     .pb-wrap{
       display:grid; grid-template-columns: 1fr auto; align-items:center; gap:10px;
       color: var(--pb-text);
@@ -118,7 +132,6 @@
     }
     .pb-viewport:hover .pb-track{ animation-play-state: paused; }
 
-    /* Chips */
     .pb-chip{
       display:inline-flex; align-items:center; gap:.55rem;
       color: var(--pb-chip-text);
@@ -134,7 +147,6 @@
     .pb-4{ background: var(--pb-chip-4); }
     .pb-5{ background: var(--pb-chip-5); }
 
-    /* Botón cerrar */
     .pb-close{
       border: 1px solid rgba(255,255,255,.15);
       background: rgba(15,23,42,.75);
@@ -152,7 +164,7 @@
       .pb-track{ animation:none; }
     }
 
-    /* Efecto hover suave en cards existentes (opcional) */
+    /* Hover suave para tus cards existentes */
     .card{
       transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
       will-change: transform;
@@ -167,9 +179,11 @@
   <!-- JS del sitio -->
   <script src="assets/main.js" defer></script>
 </head>
-<body>
 
-  <!-- =============== BANNER NUEVO EN TARJETA (neón + patrón) =============== -->
+<!-- CAMBIÁ LA CLASE DEL BODY PARA ELEGIR TEMA -->
+<body class="pb-theme-turq">  <!-- usar pb-theme-amber para amarillo -->
+
+  <!-- ====== BANNER EN TARJETA ====== -->
   <div class="pb-shell" id="pbShell">
     <div class="pb-card" id="pbCard">
       <div class="pb-inner">
@@ -199,7 +213,6 @@
     </div>
   </div>
   <script>
-    // Si el usuario ya lo cerró, no lo mostramos
     (function(){
       try{
         if(localStorage.getItem('pbClosed')==='1'){
@@ -208,7 +221,7 @@
       }catch(e){}
     })();
   </script>
-  <!-- ============================================================== -->
+  <!-- ================================ -->
 
   <!-- HEADER -->
   <header class="container">
@@ -394,6 +407,6 @@
   <a href="#inicio" class="to-top show" aria-label="Volver arriba">↑</a>
 
   <!-- Catálogo (rompe caché) -->
-  <script src="assets/js/products.js?v=24" defer></script>
+  <script src="assets/js/products.js?v=25" defer></script>
 </body>
 </html>

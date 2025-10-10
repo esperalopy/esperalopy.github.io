@@ -1,106 +1,13 @@
 <!doctype html>
 <html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Panel de administración — Esperalopy</title>
-  <style>
-    :root{
-      --bg:#0b1220;--panel:#0f172a;--txt:#e5e7eb;--muted:#94a3b8;--accent:#22c55e;
-    }
-    html,body{height:100%}
-    body{
-      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial;
-      background:var(--bg); color:var(--txt);
-      display:grid; place-items:center;
-    }
-    .wrap{max-width:780px; width:100%; padding:28px}
-    .card{
-      background:var(--panel); border:1px solid rgba(255,255,255,.08);
-      border-radius:14px; padding:22px 22px 8px;
-    }
-    h1{margin:0 0 8px 0; font-size:20px}
-    p{margin:.25rem 0; color:var(--muted)}
-    .hint{font-size:14px; margin-top:10px}
-    .btn{
-      display:inline-block; margin-top:16px; padding:10px 14px; border-radius:10px;
-      background:var(--accent); color:#0b1220; text-decoration:none; font-weight:600
-    }
-  </style>
-</head>
-<body>
-  <div class="wrap">
-    <div class="card">
-      <h1>Panel de administración</h1>
-      <p>Esperalopy — Cargando el CMS…</p>
-      <p class="hint">Si ves esta pantalla por más de 10s, actualizá (Ctrl+F5 / Cmd+Shift+R).</p>
-      <a class="btn" href="/">Ir al sitio</a>
-    </div>
-  </div>
-
-  <!-- Cargamos Decap CMS -->
-  <script>
-    // Usaremos configuración manual embebida (sin config.yml)
-    window.CMS_MANUAL_INIT = true;
-  </script>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-
-  <script>
-    // Inicializamos el CMS con la configuración para GitHub + proxy público de Decap
-    CMS.init({
-      config: {
-        backend: {
-          name: "github",
-          repo: "esperalopy/esperalopy.github.io",
-          branch: "main",
-          base_url: "https://decap-oauth.netlify.app",
-          auth_endpoint: "api/auth",
-          app_id: "Ov23liJJB4XnGWkVIAW1"   // <= Tu Client ID
-        },
-
-        locale: "es",
-        publish_mode: "editorial_workflow",
-
-        media_folder: "assets/img/productos",
-        public_folder: "/assets/img/productos",
-
-        collections: [
-          {
-            label: "Catálogo",
-            name: "catalogo",
-            files: [
-              {
-                label: "Productos",
-                name: "productos",
-                file: "assets/products.json",
-                format: "json",
-                fields: [
-                  {
-                    label: "Items",
-                    name: "items",
-                    widget: "list",
-                    summary: "{{fields.nombre}} — Gs. {{fields.precio}}",
-                    fields: [
-                      { label: "ID",         name: "id",          widget: "string", hint: "Único. Ej: prod-001" },
-                      { label: "Nombre",     name: "nombre",      widget: "string" },
-                      { label: "Descripción",name: "descripcion", widget: "text", required: false },
-                      { label: "Precio (Gs.)",name: "precio",      widget: "number", value_type: "int", min: 0 },
-                      { label: "Moneda",     name: "moneda",      widget: "string", default: "PYG" },
-                      { label: "Categoría",  name: "categoria",   widget: "select",
-                        options: ["Telefonía","Computación","Audio","Electro"] },
-                      { label: "Imagen",     name: "imagen",      widget: "image", media_folder: "", public_folder: "" },
-                      { label: "Estado (badge)", name: "estado",   widget: "select",
-                        options: ["Nuevo","Seminuevo","Usado • Muy bueno","Usado • Bueno","Agotado"], required: false },
-                      { label: "Disponible", name: "disponible",  widget: "boolean", default: true }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    });
-  </script>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>Administrador</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Widget de Netlify Identity (para el login sin servidor propio) -->
+    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+    <!-- Decap CMS (antes Netlify CMS) -->
+    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  </head>
+  <body></body>
 </html>

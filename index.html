@@ -15,7 +15,7 @@
 
   <!-- Seguridad básica -->
   <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; img-src 'self' data:; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'">
+        content="default-src 'self' https://raw.githubusercontent.com https://api.github.com; img-src 'self' data: https://raw.githubusercontent.com; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
   <meta http-equiv="X-Frame-Options" content="DENY">
   <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
@@ -34,6 +34,8 @@
 
   <!-- JS base del sitio -->
   <script src="assets/main.js" defer></script>
+  <!-- Carga de publicaciones del CMS (nuevo) -->
+  <script src="assets/js/publicaciones.js" defer></script>
 </head>
 <body>
   <!-- HEADER -->
@@ -96,6 +98,19 @@
           <p>Planes simples y flexibles. Pagás solo por lo que realmente necesitás.</p>
         </article>
       </div>
+    </section>
+
+    <!-- PUBLICACIONES (nuevo bloque, se llena solo con lo del CMS) -->
+    <section id="publicaciones" class="section">
+      <div class="badge">Novedades</div>
+      <h2 style="margin:6px 0 16px 0">Publicaciones recientes</h2>
+      <div id="listaPublicaciones"
+           style="display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px;">
+        <p style="opacity:.85;margin:.5rem 0">Cargando publicaciones…</p>
+      </div>
+      <p style="margin-top:14px">
+        <a href="/blog.html" class="btn secondary">Ver todas →</a>
+      </p>
     </section>
 
     <!-- PRODUCTOS -->

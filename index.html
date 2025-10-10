@@ -1,136 +1,228 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <title>Esperalopy — Publicaciones</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="color-scheme" content="light dark" />
-  <style>
-    :root{
-      --bg:#0f1115; --card:#151924; --muted:#8a8ea3; --text:#eaeaea; --brand:#8ab4ff; --divider:#262b36;
-    }
-    *{box-sizing:border-box}
-    html,body{margin:0;min-height:100%}
-    body{font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
-    a{color:var(--brand);text-decoration:none}
-    a:hover{text-decoration:underline}
-    header{padding:24px 20px;border-bottom:1px solid var(--divider)}
-    header .row{max-width:1000px;margin:0 auto;display:flex;gap:14px;align-items:center;justify-content:space-between}
-    .btn{appearance:none;border:1px solid #2a2f3a;background:#1a1f2b;color:#fff;padding:10px 14px;border-radius:10px;cursor:pointer}
-    .btn:hover{background:#232836}
-    main{max-width:1000px;margin:0 auto;padding:24px 20px}
-    .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
-    .card{background:var(--card);border:1px solid var(--divider);border-radius:14px;padding:16px}
-    .card h3{margin:.2rem 0 .5rem 0;font-size:1.1rem}
-    .meta{font-size:.85rem;color:var(--muted);margin-bottom:.5rem}
-    .empty{opacity:.85;margin-top:30px}
-    .post{background:var(--card);border:1px solid var(--divider);border-radius:14px;padding:22px}
-    .post h1{margin-top:0}
-    .back{display:inline-block;margin-bottom:16px}
-    footer{margin:40px 0 30px 0;text-align:center;color:var(--muted);font-size:.9rem}
-    .badge{font-size:.8rem;color:#7CFC7C}
-    code{background:#0d0f14;padding:2px 4px;border-radius:6px;border:1px solid #1f2330}
-  </style>
-  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Esperalopy — Sitio oficial</title>
+  <meta name="description" content="Sitio oficial de Esperalopy. Compra y ventas minoristas con atención cercana y confiable.">
+
+  <!-- Open Graph / SEO -->
+  <meta property="og:title" content="Esperalopy — Sitio oficial">
+  <meta property="og:description" content="Compra y ventas minoristas con atención cercana y confiable.">
+  <meta property="og:image" content="assets/og-image.png">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_PY">
+
+  <!-- Seguridad básica -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; img-src 'self' data:; object-src 'none'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/favicon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon.png">
+  <link rel="shortcut icon" href="assets/favicon.png">
+
+  <!-- CSS del sitio -->
+  <link rel="preload" href="styles.css" as="style">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="assets/nav.css">
+
+  <!-- JS base del sitio -->
+  <script src="assets/main.js" defer></script>
 </head>
 <body>
-  <header>
-    <div class="row">
-      <div>
-        <strong>Esperalopy</strong> · <span class="badge">CMS activo</span>
+  <!-- HEADER -->
+  <header class="container">
+    <nav class="nav" aria-label="Principal">
+      <a class="brand" href="#inicio" aria-label="Inicio">
+        <img src="assets/logo.png" alt="Logo Esperalopy">
+        <span>Esperalopy</span>
+      </a>
+
+      <button class="hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="main-menu">☰</button>
+
+      <div class="menu" id="main-menu">
+        <a href="#inicio">Inicio</a>
+        <a href="#servicios">Servicios</a>
+        <a href="#productos">Productos</a>
+        <a href="#faq">Preguntas</a>
+        <a href="#contacto" class="btn secondary">Contacto</a>
       </div>
-      <div>
-        <a class="btn" href="/admin/">Entrar al CMS</a>
-      </div>
-    </div>
+    </nav>
   </header>
 
-  <main id="app"></main>
+  <main id="inicio" class="container">
+    <!-- HERO -->
+    <section class="hero">
+      <div>
+        <h1 class="h1">Esperalopy: <span style="color:var(--accent)">donde tus productos vuelven a brillar</span>.</h1>
+        <p class="lead">Compra y ventas minoristas con confianza, calidad y precios justos.</p>
+        <div class="cta">
+          <a class="btn primary" href="https://wa.me/595994252213?text=Hola%20Esperalopy!%20Vengo%20de%20tu%20web%20y%20quiero%20hacer%20una%20consulta."
+             target="_blank" rel="noopener noreferrer">Escribime al WhatsApp</a>
+          <a class="btn secondary" href="#servicios">Ver servicios</a>
+        </div>
+      </div>
+      <img src="assets/hero.png" alt="Portada de Esperalopy">
+    </section>
 
-  <footer>
-    Publicado con Decap CMS + Netlify · <a href="https://github.com/esperalopy/esperalopy.github.io">Repo</a>
+    <!-- SERVICIOS -->
+    <section id="servicios" class="section">
+      <div class="badge">Qué ofrecemos</div>
+      <h2 style="margin:6px 0 16px 0">Servicios principales</h2>
+
+      <div class="grid3">
+        <article class="card">
+          <img src="assets/feature1.png" alt="Calidad garantizada">
+          <h3>Calidad que se nota</h3>
+          <p>Productos y trabajos con estándares altos y revisión final antes de entregar.</p>
+        </article>
+
+        <article class="card">
+          <img src="assets/feature2.png" alt="Atención cercana">
+          <h3>Atención cercana</h3>
+          <p>Conversamos por WhatsApp o correo, como te resulte más cómodo.</p>
+        </article>
+
+        <article class="card">
+          <img src="assets/feature3.png" alt="Precios justos">
+          <h3>Precios justos</h3>
+          <p>Planes simples y flexibles. Pagás solo por lo que realmente necesitás.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- PRODUCTOS -->
+    <section id="productos" class="section">
+      <div class="badge">Catálogo</div>
+      <h2 style="margin:6px 0 8px 0">Productos destacados</h2>
+      <p style="opacity:.7; margin:0 0 12px 0; font-size:.95rem;">
+        Nota: por el momento <strong>no manejamos compras en cuotas</strong>. Aceptamos efectivo y transferencia.
+      </p>
+
+      <header style="display:flex; align-items:end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:20px;">
+        <p style="opacity:.8; margin:.25rem 0 0;">Fotos, precios en guaraníes y botón directo a WhatsApp.
+          <span id="contadorProductos" style="margin-left:8px; font-weight:600; opacity:.9;"></span>
+        </p>
+        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <input id="buscar" type="search" placeholder="Buscar…" aria-label="Buscar productos"
+                 style="padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:#0f172a; color:#fff; min-width:220px;">
+          <select id="filtroCategoria" style="padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:#0f172a; color:#fff;">
+            <option value="">Todas</option>
+            <option value="Telefonía">Telefonía</option>
+            <option value="Computación">Computación</option>
+            <option value="Audio">Audio</option>
+            <option value="Electro">Electro</option>
+          </select>
+          <select id="ordenar" style="padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:#0f172a; color:#fff;">
+            <option value="relevancia">Ordenar: Relevancia</option>
+            <option value="precio-asc">Precio: menor a mayor</option>
+            <option value="precio-desc">Precio: mayor a menor</option>
+            <option value="nombre-asc">Nombre: A → Z</option>
+            <option value="nombre-desc">Nombre: Z → A</option>
+            <option value="nuevo">Más nuevos primero</option>
+          </select>
+          <button id="btnLimpiar" type="button"
+                  style="margin-left:8px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.15);background:#0f172a;color:#fff;cursor:pointer;">
+            Limpiar filtros
+          </button>
+        </div>
+      </header>
+
+      <div id="gridProductos" aria-live="polite"
+           style="display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px;">
+        <p style="opacity:.85;margin:.5rem 0">Cargando catálogo…</p>
+      </div>
+
+      <!-- Molde de tarjeta para JS -->
+      <template id="tplProducto">
+        <article class="card" style="background:#0b1220; border:1px solid rgba(255,255,255,.1); border-radius:16px; overflow:hidden; display:flex; flex-direction:column;">
+          <div style="position:relative; aspect-ratio:1/1; background:#0d1b2a;">
+            <img alt="" loading="lazy" class="lazy-img" style="width:100%; height:100%; object-fit:cover; display:block;">
+            <span class="badge" style="position:absolute; top:10px; left:10px; background:#1d4ed8; color:#fff; padding:4px 8px; border-radius:999px; font-size:12px;"></span>
+          </div>
+          <div style="padding:14px; display:flex; flex-direction:column; gap:8px;">
+            <h3 style="font-size:16px; margin:0; line-height:1.2;"></h3>
+            <p class="desc" style="opacity:.8; font-size:14px; margin:0; min-height:38px;"></p>
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:12px; flex-wrap:wrap;">
+              <strong class="precio" style="font-size:18px;"></strong>
+              <a class="btnWp" target="_blank" rel="noopener"
+                 style="text-decoration:none; padding:10px 12px; border-radius:10px; background:#22c55e; color:#0b1220; font-weight:600; display:inline-block; line-height:1;">
+                WhatsApp
+              </a>
+              <button class="btnReservar"
+                      style="padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.15); background:#1d4ed8; color:#fff; font-weight:600; cursor:pointer; display:inline-block; line-height:1;">
+                Reservar
+              </button>
+            </div>
+          </div>
+        </article>
+      </template>
+      <noscript><p style="opacity:.85">Para ver el catálogo, activá JavaScript.</p></noscript>
+    </section>
+
+    <!-- PREGUNTAS FRECUENTES -->
+    <section id="faq" class="section">
+      <div class="badge">Preguntas frecuentes</div>
+      <h2 style="margin:6px 0 16px 0">Dudas comunes</h2>
+
+      <div class="faq">
+        <details>
+          <summary>¿Cómo compro un producto?</summary>
+          <p>Elegí el producto, tocá el botón <strong>WhatsApp</strong> en su tarjeta y te llevamos al chat con el mensaje listo. Coordinamos entrega y medio de pago por ahí.</p>
+        </details>
+        <details>
+          <summary>¿Qué medios de pago aceptan?</summary>
+          <p>Por ahora aceptamos <strong>efectivo</strong> y <strong>transferencia bancaria</strong>. De momento <strong>no ofrecemos compras en cuotas</strong>. Si sumamos más medios de pago, lo vamos a anunciar en esta sección.</p>
+        </details>
+        <details>
+          <summary>¿Hacen envíos?</summary>
+          <p>Sí, podemos coordinar envíos en Asunción/Gran Asunción y al interior con transportes. El costo depende de la zona.</p>
+        </details>
+        <details>
+          <summary>¿Los productos tienen garantía?</summary>
+          <p>Sí. El plazo depende del artículo y su estado (nuevo/semineuvo/usado). Siempre dejamos el detalle en la descripción o por chat.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <!-- CONTACTO -->
+  <section id="contacto" class="section">
+    <div class="badge">Contacto</div>
+    <h2 style="margin:6px 0 16px 0">Hablemos</h2>
+    <p>Correo: <a href="mailto:esperalopy@gmail.com" rel="noopener">esperalopy@gmail.com</a></p>
+    <p>WhatsApp: <a href="https://wa.me/595994252213" target="_blank" rel="noopener noreferrer">+595 994 252 213</a></p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p><strong>Esperalopy</strong> · Compra y ventas minoristas</p>
+    <p>
+      📧 <a href="mailto:esperalopy@gmail.com">esperalopy@gmail.com</a> ·
+      💬 <a href="https://wa.me/595994252213" target="_blank" rel="noopener noreferrer">WhatsApp: +595 994 252 213</a>
+    </p>
+    <p>
+      <a href="#servicios">Servicios</a> ·
+      <a href="#productos">Productos</a> ·
+      <a href="#contacto">Contacto</a>
+    </p>
+    <p>© 2025 Esperalopy. Todos los derechos reservados.</p>
   </footer>
 
-  <script>
-    const OWNER  = 'esperalopy';
-    const REPO   = 'esperalopy.github.io';
-    const BRANCH = 'main';
-    const POSTS_DIR = 'content/posts';
+  <!-- Botón flotante WhatsApp -->
+  <a href="https://wa.me/595994252213?text=Hola%20Esperalopy!%20Vengo%20de%20tu%20web%20y%20quiero%20hacer%20una%20consulta."
+     class="wp-float" aria-label="Escribir por WhatsApp">💬</a>
 
-    const fmtDate = (iso) => { try { return new Date(iso).toLocaleDateString('es-PY',{year:'numeric',month:'short',day:'numeric'});} catch {return iso;} };
-    const parseFrontMatter = (txt) => {
-      const m = txt.match(/^---\s*([\s\S]*?)\s*---\s*([\s\S]*)$/);
-      if(!m) return { data:{}, body:txt };
-      const yaml = m[1], body = m[2], data = {};
-      yaml.split(/\r?\n/).forEach(line=>{
-        const mm = line.match(/^\s*([A-Za-z0-9_-]+)\s*:\s*(.*)\s*$/);
-        if(mm){ data[mm[1]] = mm[2].trim().replace(/^"(.*)"$/,'$1'); }
-      });
-      return { data, body };
-    };
-    const el = (html)=>{ const d=document.createElement('div'); d.innerHTML=html; return d.firstElementChild; };
+  <!-- Botón Volver arriba (si tu styles.css lo maneja con .to-top) -->
+  <a href="#inicio" class="to-top" aria-label="Volver arriba">↑</a>
 
-    const params = new URLSearchParams(location.search);
-    const postPath = params.get('post');
-
-    async function listPosts(){
-      const app = document.getElementById('app');
-      app.innerHTML = '<p>Cargando publicaciones…</p>';
-      const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${POSTS_DIR}?ref=${BRANCH}`;
-      const res = await fetch(url);
-      if(!res.ok){ app.innerHTML = `<p class="empty">No se pudo listar posts (${res.status}).</p>`; return; }
-      const files = (await res.json()).filter(f=>f.type==='file' && /\.md$/.test(f.name));
-      if(files.length===0){ app.innerHTML = '<p class="empty">No hay publicaciones. Creá una en <b>/admin</b>.</p>'; return; }
-
-      const items = [];
-      for(const f of files){
-        const raw = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${POSTS_DIR}/${encodeURIComponent(f.name)}`;
-        const txt = await (await fetch(raw)).text();
-        const { data } = parseFrontMatter(txt);
-        items.push({
-          file: f.name,
-          title: data.title || f.name.replace(/\.md$/,''),
-          date:  data.date || '',
-          description: data.description || ''
-        });
-      }
-      items.sort((a,b)=> (new Date(b.date) - new Date(a.date)));
-
-      const wrap = el('<div class="cards"></div>');
-      items.forEach(it=>{
-        const href = `/?post=${encodeURIComponent(`${POSTS_DIR}/${it.file}`)}`;
-        wrap.appendChild(el(`
-          <article class="card">
-            <div class="meta">${it.date ? fmtDate(it.date) : ''}</div>
-            <h3><a href="${href}">${it.title}</a></h3>
-            <p>${it.description || ''}</p>
-            <p><a href="${href}">Leer más →</a></p>
-          </article>
-        `));
-      });
-      app.innerHTML = '';
-      app.appendChild(wrap);
-    }
-
-    async function showPost(repoPath){
-      const app = document.getElementById('app');
-      app.innerHTML = '<p>Cargando publicación…</p>';
-      const raw = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${repoPath}`;
-      const txt = await (await fetch(raw)).text();
-      const { data, body } = parseFrontMatter(txt);
-      const html = marked.parse(body);
-      app.innerHTML = '';
-      app.appendChild(el(`
-        <article class="post">
-          <a class="back" href="/">← Volver</a>
-          <h1>${data.title || 'Publicación'}</h1>
-          <div class="meta">${data.date ? fmtDate(data.date) : ''}</div>
-          <div>${html}</div>
-        </article>
-      `));
-    }
-
-    if(postPath){ showPost(postPath); } else { listPosts(); }
-  </script>
+  <!-- Catálogo (rompe caché para forzar actualización) -->
+  <script src="assets/js/products.js?v=25" defer></script>
 </body>
 </html>

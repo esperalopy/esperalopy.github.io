@@ -5,8 +5,6 @@ backend:
 media_folder: "static/uploads"
 public_folder: "/static/uploads"
 
-publish_mode: editorial_workflow
-
 collections:
   - name: "posts"
     label: "Publicaciones"
@@ -29,4 +27,3 @@ collections:
     fields:
       - { label: "Título", name: "title", widget: "string" }
       - { label: "Contenido", name: "body", widget: "markdown" }
-

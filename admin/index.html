@@ -4,17 +4,82 @@
     <meta charset="utf-8" />
     <title>Administrador</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      html,body{height:100%;margin:0}
+      body{display:flex;align-items:center;justify-content:center;background:#0f1115;color:#eaeaea;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif}
+      #box{padding:20px 24px;border:1px solid #2a2f3a;border-radius:12px;background:#151924;box-shadow:0 8px 30px rgba(0,0,0,.35);max-width:760px}
+      .ok{color:#7CFC7C}
+      .err{color:#ff6b6b;white-space:pre-wrap}
+      a{color:#8ab4ff}
+    </style>
+
+    <!-- MUY IMPORTANTE: decirle a Decap que NO se auto-inicialice -->
+    <script>
+      window.CMS_MANUAL_INIT = true;
+    </script>
+
     <!-- Netlify Identity (login) -->
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    <!-- Decap CMS estable -->
+    <!-- Decap CMS -->
     <script src="https://cdn.jsdelivr.net/npm/decap-cms@3.0.9/dist/decap-cms.js"></script>
   </head>
   <body>
-    <!-- Enlaces de respaldo por si el modal no aparece -->
-    <p style="font-family: system-ui; padding: 16px;">
-      Si no ves el modal, abrí: 
-      <a href="javascript:window.netlifyIdentity && window.netlifyIdentity.open('login')">Login</a> ·
-      <a href="javascript:window.netlifyIdentity && window.netlifyIdentity.open('signup')">Sign up</a>
-    </p>
+    <div id="box">
+      <div id="msg">Preparando panel…</div>
+      <p id="tips" style="opacity:.85">
+        Si no aparece el login, abrí <a href="javascript:window.netlifyIdentity && window.netlifyIdentity.open('login')">Login</a> o 
+        <a href="javascript:window.netlifyIdentity && window.netlifyIdentity.open('signup')">Sign up</a>.
+      </p>
+    </div>
+
+    <script>
+      const msg = document.getElementById('msg');
+      function setMsg(t, cls){ msg.textContent = t; msg.className = cls || ''; }
+
+      async function ensureConfig() {
+        const r = await fetch('./config.yml', { cache: 'no-store' });
+        if (!r.ok) throw new Error('No se pudo cargar /admin/config.yml ('+r.status+')');
+      }
+
+      function initCMS() {
+        try {
+          // Inicializamos Decap explicitamente y le dejamos que resuelva /admin/config.yml
+          CMS.init();
+          setMsg('Abriendo el panel…', 'ok');
+        } catch (e) {
+          setMsg('Error iniciando el CMS: ' + e.message, 'err');
+          console.error(e);
+        }
+      }
+
+      (async function main(){
+        try{
+          await ensureConfig();                     // 1) verificar config
+          setMsg('Config OK ✓', 'ok');
+
+          // 2) esperar a Netlify Identity
+          if (!window.netlifyIdentity) throw new Error('No cargó Netlify Identity');
+
+          // 3) cuando Identity esté listo, si hay usuario → iniciar CMS; si no → abrir login
+          window.netlifyIdentity.on('init', (user)=>{
+            if (user) {
+              setMsg('Autenticada ✓', 'ok');
+              initCMS();
+            } else {
+              setMsg('Necesitás iniciar sesión para entrar al panel.');
+              // abrir modal de login
+              window.netlifyIdentity.open('login');
+              // cuando termine el login, recargar para montar el panel
+              window.netlifyIdentity.on('login', ()=>location.reload());
+            }
+          });
+
+          window.netlifyIdentity.init({ locale: 'es' });
+        }catch(e){
+          setMsg('Error: ' + (e && e.message ? e.message : e), 'err');
+          console.error(e);
+        }
+      })();
+    </script>
   </body>
 </html>

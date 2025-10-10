@@ -11,44 +11,71 @@
       .ok{color:#7CFC7C}
       .err{color:#ff6b6b; white-space:pre-wrap}
     </style>
-
-    <!-- Widget de Netlify Identity (login sin servidor) -->
+    <!-- Netlify Identity (login sin servidor propio) -->
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-
-    <!-- Decap CMS (antes Netlify CMS) -->
-    <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   </head>
   <body>
     <div id="status">Cargando panel…</div>
 
     <script>
-      // Muestra mensajes útiles si algo falla
-      function setStatus(msg, cls){ 
-        var el = document.getElementById('status'); 
-        el.textContent = msg; 
-        if (cls) el.className = cls; 
+      function setStatus(msg, cls){
+        var el = document.getElementById('status');
+        el.textContent = msg;
+        el.className = cls || '';
       }
 
-      // Aseguramos que Netlify Identity esté listo
-      if (window.netlifyIdentity) {
-        window.netlifyIdentity.on('init', function(user){
-          if (!user) {
-            window.netlifyIdentity.on('login', function(){ location.reload(); });
-          }
+      // Cargar script con promesa
+      function loadScript(src){
+        return new Promise((res, rej)=>{
+          const s = document.createElement('script');
+          s.src = src;
+          s.onload = ()=>res(src);
+          s.onerror = ()=>rej(new Error('No se pudo cargar: ' + src));
+          document.head.appendChild(s);
         });
       }
 
-      // Inicialización explícita del CMS y captura de errores
-      (async function initCMS(){
+      // Esperar a que window.CMS exista
+      function waitForCMS(timeoutMs=8000){
+        return new Promise((res, rej)=>{
+          const start = Date.now();
+          (function check(){
+            if (window.CMS) return res(window.CMS);
+            if (Date.now()-start > timeoutMs) return rej(new Error('Timeout esperando CMS'));
+            requestAnimationFrame(check);
+          })();
+        });
+      }
+
+      // Init
+      (async function init(){
         try {
-          // Verificamos que el config exista (descarga = OK también)
-          const res = await fetch('./config.yml', { cache: 'no-store' });
-          if (!res.ok) throw new Error('No se pudo cargar /admin/config.yml (' + res.status + ')');
+          // Verificamos que el config exista
+          const cfg = await fetch('./config.yml', { cache: 'no-store' });
+          if (!cfg.ok) throw new Error('No se pudo cargar /admin/config.yml (' + cfg.status + ')');
           setStatus('Config cargado ✓', 'ok');
 
-          // Decap busca automáticamente /admin/config.yml,
-          // pero llamamos init para que muestre errores en esta página si algo falla.
+          // Intento 1: jsDelivr (fijo a una versión estable)
+          try {
+            await loadScript('https://cdn.jsdelivr.net/npm/decap-cms@3.0.9/dist/decap-cms.js');
+          } catch (e1) {
+            // Intento 2 (fallback): unpkg
+            await loadScript('https://unpkg.com/decap-cms@3.0.9/dist/decap-cms.js');
+          }
+
+          // Esperar a que exponga window.CMS
+          await waitForCMS();
+
+          // Opcional: manejar Netlify Identity (auto-reload al loguear)
+          if (window.netlifyIdentity) {
+            window.netlifyIdentity.on('init', user => {
+              if (!user) window.netlifyIdentity.on('login', () => document.location.reload());
+            });
+          }
+
+          // Iniciar el CMS
           CMS.init();
+          setStatus('Abriendo el panel…', 'ok');
         } catch (e) {
           setStatus('Error al iniciar el CMS:\n' + (e && e.message ? e.message : e), 'err');
           console.error(e);

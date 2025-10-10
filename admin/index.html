@@ -4,10 +4,56 @@
     <meta charset="utf-8" />
     <title>Administrador</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Widget de Netlify Identity (para el login sin servidor propio) -->
+    <style>
+      html,body{height:100%;margin:0}
+      body{display:flex;align-items:center;justify-content:center;background:#111;color:#eee;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif}
+      #status{padding:16px 20px;border:1px solid #333;border-radius:12px;background:#181818;box-shadow:0 4px 20px rgba(0,0,0,.25)}
+      .ok{color:#7CFC7C}
+      .err{color:#ff6b6b; white-space:pre-wrap}
+    </style>
+
+    <!-- Widget de Netlify Identity (login sin servidor) -->
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
     <!-- Decap CMS (antes Netlify CMS) -->
     <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   </head>
-  <body></body>
+  <body>
+    <div id="status">Cargando panel…</div>
+
+    <script>
+      // Muestra mensajes útiles si algo falla
+      function setStatus(msg, cls){ 
+        var el = document.getElementById('status'); 
+        el.textContent = msg; 
+        if (cls) el.className = cls; 
+      }
+
+      // Aseguramos que Netlify Identity esté listo
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.on('init', function(user){
+          if (!user) {
+            window.netlifyIdentity.on('login', function(){ location.reload(); });
+          }
+        });
+      }
+
+      // Inicialización explícita del CMS y captura de errores
+      (async function initCMS(){
+        try {
+          // Verificamos que el config exista (descarga = OK también)
+          const res = await fetch('./config.yml', { cache: 'no-store' });
+          if (!res.ok) throw new Error('No se pudo cargar /admin/config.yml (' + res.status + ')');
+          setStatus('Config cargado ✓', 'ok');
+
+          // Decap busca automáticamente /admin/config.yml,
+          // pero llamamos init para que muestre errores en esta página si algo falla.
+          CMS.init();
+        } catch (e) {
+          setStatus('Error al iniciar el CMS:\n' + (e && e.message ? e.message : e), 'err');
+          console.error(e);
+        }
+      })();
+    </script>
+  </body>
 </html>

@@ -4,94 +4,17 @@
     <meta charset="utf-8" />
     <title>Administrador</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style>
-      html,body{height:100%;margin:0}
-      body{display:flex;align-items:center;justify-content:center;background:#111;color:#eee;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif}
-      #box{padding:20px 24px;border:1px solid #333;border-radius:12px;background:#181818;box-shadow:0 4px 20px rgba(0,0,0,.25);max-width:720px}
-      .ok{color:#7CFC7C}
-      .err{color:#ff6b6b;white-space:pre-wrap}
-      button{appearance:none;border:1px solid #444;background:#222;color:#fff;padding:10px 16px;border-radius:10px;cursor:pointer}
-      button:hover{background:#2a2a2a}
-      .hint{opacity:.8}
-    </style>
-    <!-- Netlify Identity widget -->
+    <!-- Netlify Identity (login) -->
     <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    <!-- Decap CMS -->
+    <!-- Decap CMS estable -->
     <script src="https://cdn.jsdelivr.net/npm/decap-cms@3.0.9/dist/decap-cms.js"></script>
   </head>
   <body>
-    <div id="box">
-      <div id="msg">Preparando login…</div>
-      <div style="margin-top:12px">
-        <button id="btnLogin" style="display:none">Abrir login</button>
-        <button id="btnSignup" style="display:none">Abrir Sign up</button>
-      </div>
-      <p class="hint">Tip: si algo falla, probá abrir <code>/admin/?open=login</code> o <code>/admin/?open=signup</code>.</p>
-    </div>
-
-    <script>
-      const $ = (s)=>document.querySelector(s);
-      const msg = $('#msg'), btnLogin = $('#btnLogin'), btnSignup = $('#btnSignup');
-      function setMsg(t, cls){ msg.textContent = t; msg.className = cls||''; }
-
-      // Intenta cargar /admin/config.yml para detectar 404
-      async function checkConfig() {
-        const r = await fetch('./config.yml', { cache: 'no-store' });
-        if (!r.ok) throw new Error('No se pudo cargar /admin/config.yml ('+r.status+')');
-      }
-
-      // Espera a que el widget esté disponible
-      function waitIdentity(timeout=12000){
-        return new Promise((res, rej)=>{
-          const t0 = Date.now();
-          (function loop(){
-            if (window.netlifyIdentity) return res(window.netlifyIdentity);
-            if (Date.now()-t0 > timeout) return rej(new Error('No cargó Netlify Identity'));
-            setTimeout(loop, 150);
-          })();
-        });
-      }
-
-      function openModal(tab){
-        try{
-          window.netlifyIdentity.open(tab);
-        }catch(e){
-          setMsg('No se pudo abrir el modal: '+e.message, 'err');
-        }
-      }
-
-      // Programa: verifica config → espera identity → abre modal o inicia CMS
-      (async function main(){
-        try{
-          await checkConfig();
-          setMsg('Config OK ✓','ok');
-
-          const id = await waitIdentity();
-          const qs = new URLSearchParams(location.search);
-          const want = qs.get('open'); // login|signup
-
-          id.on('init', (user)=>{
-            if (user){
-              setMsg('Usuario autenticado ✓ Abriendo panel…','ok');
-              try{ CMS.init(); } catch(e){ setMsg('Error CMS: '+e.message,'err'); }
-            } else {
-              setMsg('Necesitás iniciar sesión para entrar al panel.','');
-              btnLogin.style.display = 'inline-block';
-              btnSignup.style.display = 'inline-block';
-              btnLogin.onclick = ()=>openModal('login');
-              btnSignup.onclick = ()=>openModal('signup');
-              // Forzar apertura automática
-              openModal(want==='signup' ? 'signup' : 'login');
-            }
-          });
-
-          // Inicializa (necesario para que aparezca el modal)
-          id.init({ locale: 'es' });
-        }catch(e){
-          setMsg('Error: '+(e && e.message ? e.message : e), 'err');
-          console.error(e);
-        }
-      })();
-    </script>
+    <!-- Enlaces de respaldo por si el modal no aparece -->
+    <p style="font-family: system-ui; padding: 16px;">
+      Si no ves el modal, abrí: 
+      <a href="javascript:window.netlifyIdentity && window.netlifyIdentity.open('login')">Login</a> ·
+      <a href="javascript:window.netlifyIdentity && window.netlifyIdentity.open('signup')">Sign up</a>
+    </p>
   </body>
 </html>
